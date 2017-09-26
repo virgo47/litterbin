@@ -1,0 +1,17 @@
+# IDEA module/project/workspace files
+*.iml
+*.ipr
+*.iws
+
+# top level IDEA /out and .idea/.gradle at any level
+/out/
+.idea/
+.gradle/
+
+*/*/target/
+*/*/build/
+*/*/out/
+
+automation/virtualbox/windows10-base/output-virtualbox-iso/
+automation/virtualbox/windows10-base/packer_cache/
+automation/virtualbox/windows10-base/windows10-virtualbox.box

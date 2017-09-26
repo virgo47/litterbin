@@ -3,7 +3,7 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
+		classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE')
 	}
 }
 
@@ -20,6 +20,9 @@ repositories {
 }
 
 dependencies {
+  // for hotswap, but this does not work in Java 9 (at least in 1.5.7 version)
+  //compile("org.springframework.boot:spring-boot-devtools")
+
 	compile('org.springframework.boot:spring-boot-starter-undertow')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-security')
