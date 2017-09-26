@@ -24,17 +24,7 @@ class SqlSchemaExporter {
 	Map<String, TableDef> tableDefs
 	List<String> sequences = []
 
-	@SuppressWarnings("GroovyUnusedDeclaration")
-	SqlSchemaExporter(String filename) {
-		this(new FileWriter(filename))
-		println "\nPreparing $filename"
-	}
 
-	SqlSchemaExporter(sqlOutput = System.out) {
-		this.sqlOutput = sqlOutput
-	}
-
-	/** Call this with the list of tables*/
 	void extract(String... tables) {
 		prepareTableDefs(tables)
 
