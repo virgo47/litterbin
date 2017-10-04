@@ -12,6 +12,7 @@
 */*/build/
 */*/out/
 
-automation/virtualbox/windows10-base/output-virtualbox-iso/
-automation/virtualbox/windows10-base/packer_cache/
-automation/virtualbox/windows10-base/windows10-virtualbox.box
+# packer output artifacts
+output-virtualbox-iso/
+packer_cache/
+*-virtualbox.box
