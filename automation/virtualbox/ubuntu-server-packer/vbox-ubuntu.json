@@ -43,12 +43,15 @@
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
 
       "http_directory": "http_directory",
-      "http_port_min": 9001,
-      "http_port_max": 9001,
+      "http_port_min": 8900,
+      "http_port_max": 8999,
 
       "ssh_username": "{{user `ssh_name`}}",
       "ssh_password": "{{user `ssh_pass`}}",
       "ssh_wait_timeout": "20m",
+
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "vm_name": "packer-ubuntu-server",
 
       "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
 
@@ -64,5 +67,14 @@
         "initrd=/install/initrd.gz -- <enter>"
       ]
     }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "vagrant",
+        "keep_input_artifact": true,
+        "output": "ubuntu-server-{{.Provider}}.box"
+      }
+    ]
   ]
 }
