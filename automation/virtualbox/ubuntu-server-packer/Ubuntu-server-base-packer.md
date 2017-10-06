@@ -13,7 +13,7 @@ server (Packer feature) that will host preseed file.
 
 In this directory, let's run the Packer:
 ```
-packer build -force -var 'iso_url=file:///h:/work/iso-images/ubuntu-17.04-server-amd64.iso' v box-ubuntu.json
+packer build -force -var 'iso_url=file:///h:/work/iso-images/ubuntu-17.04-server-amd64.iso' vbox-ubuntu.json
 ```
 
 Var specification is not necessary, if the path in config JSON matches. Next register the
@@ -30,12 +30,21 @@ vagrant init -mf ubuntu-server-dev
 vagrant up
 ```
 
-## Current issues
+## Various issues
 
-First the box crashes with UI dialog (from VirtualBox) after `SSH auth method: private key`.
+Once the box crashed with UI dialog (from VirtualBox) after `SSH auth method: private key`.
+Not sure why, but on another host this did not happen, so perhaps just a glitch.
+
 If I run the box in VirtualBox (which works fine) next `vagrant up` hangs on repeated
-`Warning: Authentication failure. Retrying...`
+`Warning: Authentication failure. Retrying...` Google it, it seems that SSH keys are not properly
+set up. It is still possible to SSH to the box using the password:
 
-* Am I missing guest additions for shared directory mapping?
-* Should I first try it all with simpler Vagrant template? (Was it even applied when not mentioned
-in the JSON packer config?)
+```
+ssh vagrant@localhost -p 2222
+```
+
+### Open questions
+
+* How to mount shared directory? (It probably requires guest additions.)
+* How does Vagrantfile.template from Packer config relate to Vagrantfile in Vagrant project
+directory?
