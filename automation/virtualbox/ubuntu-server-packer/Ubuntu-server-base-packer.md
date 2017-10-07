@@ -30,21 +30,25 @@ vagrant init -mf ubuntu-server-dev
 vagrant up
 ```
 
-## Various issues
+To get into the box just use:
+```
+vagrant ssh
+```
 
-Once the box crashed with UI dialog (from VirtualBox) after `SSH auth method: private key`.
-Not sure why, but on another host this did not happen, so perhaps just a glitch.
-
-If I run the box in VirtualBox (which works fine) next `vagrant up` hangs on repeated
-`Warning: Authentication failure. Retrying...` Google it, it seems that SSH keys are not properly
-set up. It is still possible to SSH to the box using the password:
-
+This technically does something like:
 ```
 ssh vagrant@localhost -p 2222
 ```
 
+
+## Various issues
+
+Once the box crashed with UI dialog (from VirtualBox) after `SSH auth method: private key`.
+Not sure why, but on another host this did not happen, so perhaps just a glitch. (This happened
+more than once, but trying again worked fine, seems to be VirtualBox problem.)
+
+
 ### Open questions
 
-* How to mount shared directory? (It probably requires guest additions.)
 * How does Vagrantfile.template from Packer config relate to Vagrantfile in Vagrant project
 directory?

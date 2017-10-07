@@ -11,6 +11,7 @@
     "iso_checksum": "ca5d9a8438e2434b9a3ac2be67b5c5fa2c1f8e3e40b954519462935195464034",
     "iso_url": "file:///c:/work/iso-images/ubuntu-17.04-server-amd64.iso"
   },
+
   "builders": [
     {
       "type": "virtualbox-iso",
@@ -55,6 +56,7 @@
 
       "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
 
+      "boot_wait": "5s",
       "boot_command": [
         "<esc><esc><enter><wait>",
         "/install/vmlinuz noapic ",
@@ -68,12 +70,34 @@
       ]
     }
   ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S sh '{{ .Path }}'"
+        }
+      },
+      "scripts": [
+        "scripts/root_setup.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/setup.sh"
+      ]
+    }
+  ],
+
   "post-processors": [
     [
       {
         "type": "vagrant",
         "keep_input_artifact": true,
-        "output": "ubuntu-server-{{.Provider}}.box"
+        "output": "ubuntu-server-{{.Provider}}.box",
+        "vagrantfile_template": "Vagrantfile.template"
       }
     ]
   ]
