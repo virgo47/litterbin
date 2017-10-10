@@ -327,7 +327,8 @@ What does that mean?
 
 [ALNP](https://en.wikipedia.org/wiki/Application-Layer_Protocol_Negotiation) is used by browsers
 to upgrade to HTTP/2 -- and that's why it does not work in them. The reason is that at the time
-of writing NGINX Amazon Linux is built with OpenSSL 1.0.1 which does not support ANLP.
+of writing NGINX Amazon Linux is built with OpenSSL 1.0.1 which does not support ANLP. **Good news!
+As of Oct 2017 AMI Linux has OpenSSL 1.1 and ALNP works and browsers report HTTP/2.0!** 
 
 To some [this is a big issue](https://forums.aws.amazon.com/thread.jspa?messageID=752725) (requires
 login), I'll probably just wait for the support as I don't require HTTP/2 yet.
@@ -346,5 +347,15 @@ I also added/enabled the following lines in both my secured `server` sections:
         ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
 ```
 
-These were also recommended in other articles and the rating went to A. I passed on the
+These were also recommended in other articles and the rating went to A (100/95/90/90).
+
+Now to get to 100 on protocol, I guess I need to fix
 [DNS CAA: No](https://blog.qualys.com/ssllabs/2017/03/13/caa-mandated-by-cabrowser-forum) warning.
+Currently I can't because it's not [Let's Encrypt's business](https://letsencrypt.org/docs/caa/)
+but one of my DNS provider - and [Namecheap does not support CAA
+entries](https://www.namecheap.com/support/knowledgebase/article.aspx/535/51/what-type-of-dns-records-can-i-manage)
+(at least not yet, it's planned with no ETA).
+
+Futher ways how to improve Key Exchange and Cipher Strength is probably to drop TLS 1.0/1.1, but
+this would unnecessarily lower the accessability of the page (not that it matters, there is still
+plain HTTP).
