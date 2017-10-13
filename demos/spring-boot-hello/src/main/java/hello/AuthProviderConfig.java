@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 //import org.springframework.security.kerberos.authentication.KerberosAuthenticationProvider;
 //import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosClient;
 
@@ -21,6 +20,9 @@ public class AuthProviderConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.csrf().disable()
+			.authorizeRequests().anyRequest().permitAll();
+			/*
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/", "/home").permitAll()
@@ -35,8 +37,8 @@ public class AuthProviderConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 			.logoutUrl("/logout")
 //			.logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // GET not recommended!
-			.logoutSuccessUrl("/")
-			.permitAll();
+			.logoutSuccessUrl("/").permitAll();
+			*/
 	}
 
 	@Override
