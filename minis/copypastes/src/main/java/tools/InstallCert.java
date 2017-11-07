@@ -1,7 +1,13 @@
 package tools;
 
-import static java.io.File.separatorChar;
-
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,18 +20,20 @@ import java.security.MessageDigest;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import javax.xml.bind.DatatypeConverter;
+import static java.io.File.separatorChar;
 
 /**
- * Class used to add the server's certificate to the KeyStore
- * with your trusted certificates.
+ * Class used to add the server's certificate to the KeyStore with your trusted certificates.
+ *
+ * Based on: http://nodsw.com/blog/leeland/2006/12/06-no-more-unable-find-valid-certification-path-requested-target
+ *
+ * To see the details of a certificate:
+ * <pre>
+ * keytool -keystore jssecacerts -storepass changeit -list -v -alias <cert-alias>
+ * </pre>
+ *
+ * To print it in RFC style replace `-v` with `-rfc`. More about this and also how to extract
+ * public key from the certificate: http://stackoverflow.com/q/10103657/658826
  */
 public class InstallCert {
 
