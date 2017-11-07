@@ -1,4 +1,4 @@
-Notes about imaginary "Java really 2"
+Notes about imaginary "Java really 2" (less and less sure about that Java)
 
 
 ## Generic ideas or questions
@@ -39,11 +39,16 @@ use NaN, so for these types we have to obey).
 be default and used without explicit "name =").
 * Method/function default parameters? I'd go for it (trailing).
 * More control over package visibility (like sub-packages are not the same as outside packages).
+* Modularity (what from Java and what from OSGi or something else).
 * Object literals like JavaScript, that is just cool. Do we even need "schema" for these objects?
 Sometimes it can be useful (framework, DTO, generation or WS, ...).
 	* Object literal in JS is object creation on the spot, whatever its structure is. Sometimes
 	we may want to conform to some structure. For that we need to predefine the structure. What
 	syntax for that? That also implies types - simple and structured (classes?) as well.
+* Reflection, including stack introspection, it can be super useful, e.g. [this
+post](https://brewing.codes/2017/01/04/how-to-implement-string-interpolation-in-python/) towards
+the end.
+* Some form of metaprogramming ala Groovy?
 
 ### Language - questionable and/or radical
 
