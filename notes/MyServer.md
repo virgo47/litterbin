@@ -210,8 +210,8 @@ and named it `renew-certs.sh`):
 #!/bin/sh
 
 ~/letsencrypt/letsencrypt-auto renew \
-  --pre-hook "service nginx stop" \
-  --post-hook "service nginx start" &> \
+  --pre-hook "/sbin/service nginx stop" \
+  --post-hook "/sbin/service nginx start" &> \
   ~/renewal-`date +%FT%T`.log
 ```
 
@@ -220,11 +220,32 @@ Set the executable flag and setup the crontab:
 ```
 cd
 chmod 700 renew-certs.sh
-(crontab -l; echo "47 0 * * * ~/renew-certs.sh") | crontab -
+(crontab -l | grep -v 'renew-certs'; echo "47 0 * * 0 $HOME/renew-certs.sh") | crontab -
 ```
 
-Later check whether some log files appear in root's home directory. Weekly period (e.g.
-`47 0 * * 0` for Sunday) is possible when we feel confident. :-)
+Later (in this case after Sunday) check whether some log files appear in root's home directory
+or use some closer time first to assure it runs (check `date` it may be UTC, hence different
+than local).
+
+NOTE: I'm using `grep -v` for older `renew-cert` lines in crontab as I want to replace them. Tilde
+is NOT recommended in crontab, hence the `$HOME` which, BTW, gets expanded before being written
+into crontab. This can be prevented, but there is no reason to do so, if the path is right.
+
+The first time the cronjob ran and actually was about to renew the log (`renewal-...` file)
+contained this error:
+
+```
+Failed to find executable service in expanded PATH: /usr/bin:/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+Unable to find pre-hook command service in the PATH.
+(PATH is /usr/bin:/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin)
+```
+
+Running `which service` reveals the executable `service` is in `/sbin` which is not in the `PATH`
+listed in the error (it is, however, in the PATH of interactive shell). See [these
+tips](http://krisjordan.com/essays/timesaving-crontab-tips) for explanation. Options are: a)
+set PATH in the `renew-certs.sh` explicitly, b) use full path for `service` hooks in the script.
+
+I tried the latter (already applied in the script listing above).
 
 
 ### Checking configuration
