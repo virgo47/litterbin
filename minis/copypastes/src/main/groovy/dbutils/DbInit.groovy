@@ -18,11 +18,11 @@ class DbInit {
 	/** If true, dates are converted to timestamp - handy for old MSSQL 2005. */
 	static def datetimeOnly = true
 
-	private static int inserts;
-	private static int deletes;
-	private static int deletedRows;
-	private static int updates;
-	private static int updatedRows;
+	private static int inserts
+	private static int deletes
+	private static int deletedRows
+	private static int updates
+	private static int updatedRows
 
 	static void connect(url, user, password) {
 		if (sql != null) {
@@ -99,15 +99,7 @@ class DbInit {
 
 		// here we construct column list, question marks and list of actual parameters
 		def pureSelector = purifySelector(selector)
-		List<List<Object>> keys = insert(tableName, pureSelector + defaults + insertParams)
-		// lastly we extract single key of possible, otherwise we return the whole row
-		// of returned autoincrement values (unlikely)
-		def id = keys[0]
-		if (id.size() == 1) {
-			id = id[0]
-		}
-		println "$tableName INSERTED (id=$id)"
-		return id
+		return insert(tableName, pureSelector + defaults + insertParams)
 	}
 
 	private static int updateInternal(
@@ -133,7 +125,7 @@ class DbInit {
 		def (String wherePart, List<Object> whereParams) = processSelector(selector)
 		def cnt = updateInternal(tableName, wherePart, whereParams, params)
 		println "$tableName UPDATED: $cnt"
-		return cnt;
+		return cnt
 	}
 
 	private static Object objectOrId(GroovyRowResult object, String resultProperty) {
@@ -185,9 +177,9 @@ class DbInit {
 	}
 
 	/** Returns list from table based on selector. */
-	static List<GroovyRowResult> list(String tableName, Map selector = [:]) {
+	static List<GroovyRowResult> list(String tableName, Map selector = [:], String top = '') {
 		def (String wherePart, List<Object> whereParams) = processSelector(selector)
-		def query = "select * from $tableName" + (wherePart ? " where $wherePart" : "")
+		def query = "select $top * from $tableName" + (wherePart ? " where $wherePart" : "")
 		debug(query, whereParams)
 		return sql.rows(query, whereParams)
 	}
@@ -263,13 +255,23 @@ class DbInit {
 	}
 
 	/** Simple insert into table, no default values. */
-	static List<List<Object>> insert(String tableName, Map params) {
+	static Object insert(String tableName, Map params) {
 		def (String insertColumns, String questionMarks, List<Object> insertParams) = processInsertMap(params)
 		def query = 'insert into ' + tableName +
 			' (' + insertColumns + ') values (' + questionMarks + ')'
 		debug(query, insertParams)
 		inserts++
-		return sql.executeInsert(query, insertParams)
+		def insert = sql.executeInsert(query, insertParams)
+		// lastly we extract single key of possible, otherwise we return the whole row
+		// of returned autoincrement values (unlikely)
+		def id = insert[0]
+		if (id.size() == 1) {
+			id = id[0]
+			println "$tableName INSERTED (id=$id)"
+		} else {
+			println "$tableName INSERTED (no automatic ID)"
+		}
+		return id
 	}
 
 	private static List processInsertMap(Map insertParams) {
@@ -295,20 +297,20 @@ class DbInit {
 		String manyIdColumn, Integer oneId, List<Integer> manyIds)
 	{
 		if (manyIds != null) {
-			def currentRoleIds = list(relationTable, [(oneIdColumn): oneId]).collect {
+			def currentManyIds = list(relationTable, [(oneIdColumn): oneId]).collect {
 				it[manyIdColumn]
 			}
-			def missingRoles = manyIds - currentRoleIds
-			if (!missingRoles.isEmpty()) {
-				println "Adding missing roles: " + missingRoles
-				missingRoles.forEach {
+			def missingIds = manyIds - currentManyIds
+			if (!missingIds.isEmpty()) {
+				println "Adding missing IDs: " + missingIds
+				missingIds.forEach {
 					insert(relationTable, [(oneIdColumn): oneId, (manyIdColumn): it])
 				}
 			}
-			def excessiveRoles = currentRoleIds - manyIds
-			if (!excessiveRoles.isEmpty()) {
-				println "Removing excessive roles: " + excessiveRoles
-				excessiveRoles.forEach {
+			def excessiveIds = currentManyIds - manyIds
+			if (!excessiveIds.isEmpty()) {
+				println "Removing excessive IDs: " + excessiveIds
+				excessiveIds.forEach {
 					delete(relationTable, [(oneIdColumn): oneId, (manyIdColumn): it])
 				}
 			}
@@ -320,7 +322,7 @@ class DbInit {
 	}
 
 	static def sqlDateType(Object temporal) {
-		long value = 0;
+		long value = 0
 		if (temporal instanceof Date) {
 			value = temporal.time
 		}
@@ -339,5 +341,28 @@ class DbInit {
 		println "\ninserts = $inserts"
 		println "updates = $updates (rows $updatedRows)"
 		println "deletes = $deletes (rows $deletedRows)"
+	}
+
+	/** Reading password with System.console, falling back to System.in, if console is null. */
+	static String readPassword(String prompt = "Password: ") throws IOException {
+		Console console = System.console()
+		if (console) {
+			return new String(console.readPassword(prompt))
+		}
+
+		// fallback without console
+		System.out.print(prompt)
+		int max = 50
+		byte[] b = new byte[max]
+
+		int l = System.in.read(b)
+		l-- //last character is \n
+		if (l > 0) {
+			byte[] e = new byte[l]
+			System.arraycopy(b, 0, e, 0, l)
+			return new String(e)
+		} else {
+			return null
+		}
 	}
 }
