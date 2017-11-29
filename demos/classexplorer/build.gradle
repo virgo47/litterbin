@@ -8,4 +8,5 @@ repositories {
 
 dependencies {
 	compile "org.apache.bcel:bcel:6.1"
+	compile "org.ow2.asm:asm-all:5.2"
 }
