@@ -14,7 +14,13 @@ class DbInit {
 	 * If true, it is used to update as well.
 	 */
 	static def updateWithDefaults = false
+
+	/** If true, prints debug output, SQL, params, etc. */
 	static def verbose = false
+
+	/** If true, does not execute insert/update/delete. */
+	static def dryRun = false
+
 	/** If true, dates are converted to timestamp - handy for old MSSQL 2005. */
 	static def datetimeOnly = true
 
@@ -45,12 +51,12 @@ class DbInit {
 	 * find object) we try to insert it.
 	 * <li>If insert is required provide at least [:] as insertParams, preferably specify also
 	 * defaults for user convenience.
-	 * <li>If insert is executed effective insertParams are constructed as: selector (without
-	 * any keys with operators though) + defaults + insertParams. For this reason any selector
-	 * entries with operators (for instance 'flags & 2':2) should appear with matching explicit
-	 * value in insertParams (e.g. flags:3, that will be found by condition flags & 2 = 2).
-	 * Otherwise subsequent runs may not find previously created entity - which may cause
-	 * constraint violation or their repetition. Not sure what is worse. :-)
+	 * <li>If insert is executed effective insertParams are constructed as: selector <u>without
+	 * any keys with # prefix (see lower how that works)</u> + defaults + insertParams. For this
+	 * reason any selector entries with operators (for instance '#flags & 2 = ?':2) should appear
+	 * with matching explicit value in insertParams (e.g. flags:3, that would be found by condition
+	 * flags & 2 = 2). Otherwise subsequent runs may not find previously created entity - which may
+	 * cause constraint violation or their repetition. Not sure what is worse.
 	 * <li>If object is found but differences are detected against insertMap it will be updated.
 	 * <li>Default map is used for inserts or for updates as well, based on
 	 * {@link #updateWithDefaults} boolean flag. Can be null, then acts like [:].
@@ -60,12 +66,18 @@ class DbInit {
 	 * <li>If entity is just found or updated, id is returned based on "resultProperty"
 	 * parameter, that defaults to 'id'.
 	 * <li>If resultProperty is set to null, the whole object is returned.
-	 * <li>Selector implies = operation, but allows for other using # in the name of the key,
-	 * e.g. 'col#>':5 will result in 'col > 5' condition.
-	 * <li>If 'col#is ...' is used as a key, 'col is ...' is used (NULL check). "Falsy" value is
-	 * ignored, "truthy" value is added to params, <b>but user is responsible for adding ?.</b>
-	 * <li>Selector's key can be column or other expression, e.g. flags & 2. Equality is still
-	 * implied, but this can be combined with # construct, e.g.: 'sqrt(col)#>':5
+	 * <li>Selector implies = operation, but if it starts with # anything can be inserted into the
+	 * SQL instead of column name (with initial # being trimmed), but ? placeholder must be placed
+	 * explicitly if needed (as part of the key). If # is used and value is null, it is NOT added
+	 * to the list of parameters. Examples:<br/>
+	 * '#col>5':null (or '#col>?':5, or any other function in the key)<br/>
+	 * '#EXISTS (select *...)':null<br/>
+	 * '#col is null' (this is actually equivalent of 'col':null in selectors)<br/>
+	 * '#col is not null' (cannot be done other way)<br/>
+	 * '#(col is null OR col > ?)':currentTime<br/>
+	 * TODO: do we want to support mulitiple ? in key and list of values? it should be possible :-)
+	 * <li>Insert params work bit different - initial '#' in the key is stripped (just like for
+	 * WHERE parts) but the value is put literally into the SQL. E.g. '#ID': 'NEXT VALUE FOR SQ_XXX'.
 	 * </ul>
 	 * Column list and values with question-marks is constructed automatically from merged
 	 * selector and insertParams map.
@@ -112,7 +124,7 @@ class DbInit {
 			? "update $tableName set $setPart where $wherePart"
 			: "update $tableName set $setPart")
 		debug(query, finalUpdateParams)
-		def cnt = sql.executeUpdate(query, finalUpdateParams)
+		def cnt = dryRun ? 0 : sql.executeUpdate(query, finalUpdateParams)
 		updatedRows += cnt
 		return cnt
 	}
@@ -136,9 +148,7 @@ class DbInit {
 	private static Map purifySelector(Map map) {
 		def result = [:]
 		for (String key : map.keySet()) {
-			if (key.indexOf('#') != -1 || key.indexOf('&') != -1) {
-				continue
-			} // other operator, just skip it
+			if (key.startsWith('#')) continue // skip complicated selectors
 
 			result.put(key, map.get(key))
 		}
@@ -146,7 +156,7 @@ class DbInit {
 	}
 
 	/** Selects first matching object from the table based on selector. */
-	static Object find(String tableName, Map selector) {
+	static Object findFirst(String tableName, Map selector) {
 		def (String wherePart, List<Object> whereParams) = processSelector(selector)
 		def query = "select * from $tableName where $wherePart"
 		debug(query, whereParams)
@@ -157,15 +167,24 @@ class DbInit {
 	 * Selects first matching object from the table based on selector,
 	 * throws exception if not exactly 1 result.
 	 */
+	static Object findUniqueMandatory(String tableName, Map selector) {
+		def results = findUnique(tableName, selector)
+		if (!results) {
+			throw new RuntimeException("No result for $tableName: $selector")
+		}
+		return results
+	}
+
+	/**
+	 * Selects first matching object from the table based on selector.
+	 * Throws exception if more than one result, returns null if nothing found.
+	 */
 	static Object findUnique(String tableName, Map selector) {
 		def results = list(tableName, selector)
 		if (results.size() > 1) {
 			throw new RuntimeException("Too many results for $tableName: $selector")
 		}
-		if (results.isEmpty()) {
-			throw new RuntimeException("No result for $tableName: $selector")
-		}
-		return results[0]
+		return results.isEmpty() ? null : results[0]
 	}
 
 	/** Returns list from table based on selector. */
@@ -194,14 +213,14 @@ class DbInit {
 			: "delete from $tableName")
 		debug(query, whereParams)
 		deletes++
-		def cnt = sql.executeUpdate(query, whereParams)
+		def cnt = dryRun ? 0 : sql.executeUpdate(query, whereParams)
 		deletedRows += cnt
 		println "$tableName DELETED: $cnt"
 		return cnt
 	}
 
 	private static List processSelector(Map selector) {
-		return processSelectorAndUpdate(selector, ' and ')
+		return processSelectorOrUpdate(selector, true)
 	}
 
 	static boolean updateNeeded(GroovyRowResult rowResult, Map requestedValues) {
@@ -215,11 +234,12 @@ class DbInit {
 		return false
 	}
 
-	private static List processUpdateMap(Map selector) {
-		return processSelectorAndUpdate(selector, ',')
+	private static List processUpdateMap(Map params) {
+		return processSelectorOrUpdate(params, false)
 	}
 
-	private static List processSelectorAndUpdate(Map selector, String separator) {
+	private static List processSelectorOrUpdate(Map selector, boolean where) {
+		String separator = where ? ' and ' : ','
 		if (selector == null) {
 			return [null, []]
 		}
@@ -232,24 +252,20 @@ class DbInit {
 			}
 			def colWithOp = key
 			def value = selector.get(key)
-			def opSeparatorIndex = colWithOp.indexOf('#')
-			if (opSeparatorIndex != -1) {
-				sb.append(colWithOp.replace('#', ' '))
-				// for #IS cases we don't want to add parameter
-				// unless it's "truthy"(and user must provide ? in the key)
-				if (colWithOp.length() > opSeparatorIndex + 3
-					&& colWithOp.substring(opSeparatorIndex + 1, opSeparatorIndex + 3).equalsIgnoreCase("IS"))
-				{
+			if (colWithOp.startsWith('#')) {
+				sb.append(colWithOp.substring(1).trim())
 					if (value) {
 						params.add(value)
 					}
-					continue
-				}
-			} else {
+			} else if (value != null || !where) {
 				sb.append(colWithOp).append(' =')
-			}
 			sb.append(' ?')
 			params.add(value)
+			} else {
+				// value is null, instead of = we will generate IS NULL which is expected behavior
+				// this works only for WHERE, not for SET clause of update
+				sb.append(colWithOp).append(' IS NULL')
+			}
 		}
 		return [sb.toString(), params]
 	}
@@ -260,8 +276,12 @@ class DbInit {
 		def query = 'insert into ' + tableName +
 			' (' + insertColumns + ') values (' + questionMarks + ')'
 		debug(query, insertParams)
+		if (dryRun) return null
+
 		inserts++
 		def insert = sql.executeInsert(query, insertParams)
+		if (!insert) return null
+
 		// lastly we extract single key of possible, otherwise we return the whole row
 		// of returned autoincrement values (unlikely)
 		def id = insert[0]
@@ -275,20 +295,30 @@ class DbInit {
 	}
 
 	private static List processInsertMap(Map insertParams) {
-		def keySet = insertParams.keySet()
-		def insertColumns = keySet.join(",")
-		def sb = new StringBuilder()
+		def insertColumns = new StringBuilder()
+		def valuesPart = new StringBuilder()
 		def params = []
-		for (key in keySet) {
-			if (sb.length() > 0) {
-				sb.append(',')
+		for (key in insertParams.keySet()) {
+			if (valuesPart.length() > 0) {
+				insertColumns.append(', ')
+				valuesPart.append(', ')
 			}
-			sb.append('?')
-			params.add(insertParams.get(key))
+
+			def value = insertParams.get(key)
+			if (key.startsWith('#')) {
+				key = key.substring(1)
+				valuesPart.append(value) // literally
+			} else {
+				valuesPart.append('?')
+				params.add(value)
 		}
-		return [insertColumns, sb.toString(), params]
+
+			insertColumns.append(key)
+		}
+		return [insertColumns, valuesPart.toString(), params]
 	}
 
+	/** Executes provided query - this is NOT guarded by dryRun feature! */
 	static void query(String query) {
 		sql.execute(query)
 	}
@@ -333,7 +363,8 @@ class DbInit {
 
 	private static void debug(Object... objectsOrMessages) {
 		if (verbose) {
-			objectsOrMessages.each { println "DEBUG: " + it }
+			print "DEBUG:"
+			objectsOrMessages.each { println " " + it }
 		}
 	}
 
@@ -341,6 +372,7 @@ class DbInit {
 		println "\ninserts = $inserts"
 		println "updates = $updates (rows $updatedRows)"
 		println "deletes = $deletes (rows $deletedRows)"
+		if (dryRun) println "DRY RUN, no updates to DB made"
 	}
 
 	/** Reading password with System.console, falling back to System.in, if console is null. */
