@@ -1,0 +1,11 @@
+plugins {
+	id 'java'
+}
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	compile "org.apache.bcel:bcel:6.1"
+}
