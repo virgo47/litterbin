@@ -377,6 +377,28 @@ but one of my DNS provider - and [Namecheap does not support CAA
 entries](https://www.namecheap.com/support/knowledgebase/article.aspx/535/51/what-type-of-dns-records-can-i-manage)
 (at least not yet, it's planned with no ETA).
 
-Futher ways how to improve Key Exchange and Cipher Strength is probably to drop TLS 1.0/1.1, but
-this would unnecessarily lower the accessability of the page (not that it matters, there is still
-plain HTTP).
+Further ways how to improve Key Exchange and Cipher Strength is probably to drop TLS 1.0/1.1, but
+this would unnecessarily lower the accessibility of the page.
+
+
+### Sending HTTP to HTTPS
+
+While I could leave 80 running on - and I did - it causes unnecessary confusion. After some
+problems with [progressive web app](https://en.wikipedia.org/wiki/Progressive_web_app) (when I
+placed HTTP version on home screen and [service worker](https://developers.google.com/web/fundamentals/primers/service-workers/)
+didn't work as expected to support the app in offline) I finally decided for the logical step
+and replaced the block with port 80 like this:
+
+```
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	server_name _;
+	return 301 https://$host$request_uri;
+}
+```
+
+Underscore for `server_name` is one of possible invalid names as it does not matter here. Good
+thing here is that the browser will execute the redirect to HTTPS, it's not transparent redirection
+(reverse-proxy style) which is actually not recommended as user/client may send sensitive data
+and server will think it's secured. 301 involves the client and is safer that way.
