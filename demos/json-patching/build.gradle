@@ -1,0 +1,12 @@
+plugins {
+	id 'java'
+}
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+}
