@@ -6,6 +6,14 @@ echo "Executing global root script"
 
 echo "Machine build with packer on `date`" > /packer.log
 
+mv /etc/apt/sources.list /etc/apt/sources.list.orig
+
+cat > /etc/apt/sources.list << EOF
+deb http://old-releases.ubuntu.com/ubuntu/ zesty main restricted universe multiverse
+deb http://old-releases.ubuntu.com/ubuntu/ zesty-updates main restricted universe multiverse
+deb http://old-releases.ubuntu.com/ubuntu/ zesty-security main restricted universe multiverse
+EOF
+
 # Updating and Upgrading dependencies
 apt-get update -y -qq > /dev/null
 apt-get upgrade -y -qq > /dev/null
