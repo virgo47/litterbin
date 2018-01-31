@@ -2,25 +2,22 @@
 
 ## Switching Java versions
 
-Switching between Java versions (JAVA_HOME and PATH) with jx macros with `~/.profile`:
+Switching between Java versions (JAVA_HOME and PATH) with jX macros with `~/.profile`:
 ```
-JAVA6_HOME=/c/PROGRA~2/Java/JDK16~1.0_4
-JAVA7_HOME=/c/PROGRA~2/Java/JDK17~1.0_7
-JAVA8_HOME=/c/PROGRA~1/Java/JDK18~1.0_1
-JAVA9_HOME=/c/PROGRA~1/Java/JDK-9
-ZULU9_HOME=/c/work/tools/ZULU90~1.0-W
+# This script assumes existing environment variables in Windows.
+# These MUST have short path format as spaces in JAVA_HOME path are strongly discouraged.
+
+JAVA7_HOME=`cygpath $JAVA7_HOME`
+JAVA8_HOME=`cygpath $JAVA8_HOME`
+JAVA9_HOME=`cygpath $JAVA9_HOME`
+JAVA9ZULU_HOME=`cygpath $JAVA9ZULU_HOME`
 
 function fixpath() {
   PATH=`echo $PATH |
-    sed -e "s%/c/PROGRA~./Java/JDK[^:]*%$JAVA_HOME/bin%g" \
-      -e "s%/c/work/tools/ZULU[^:]*%$JAVA_HOME/bin%g"`
+    sed -e "s%/c/PROGRA~./Java/jdk[^:]*%$JAVA_HOME/bin%gI" \
+      -e "s%/c/work/tools/zulu[^:]*%$JAVA_HOME/bin%gI"`
   echo "Current JAVA_HOME=$JAVA_HOME"
   java -version
-}
-
-function j6() {
-  JAVA_HOME=$JAVA6_HOME
-  fixpath
 }
 
 function j7() {
@@ -39,19 +36,24 @@ function j9() {
 }
 
 function j9z() {
-  JAVA_HOME=$ZULU9_HOME
+  setjava $JAVA9ZULU_HOME
+}
+
+function setjava() {
+  JAVA_HOME=$1
   fixpath
 }
 
 echo
 j8
 echo "
-Use macros j6/j7/j8/j9/j9z (Zulu) to switch quickly between Javas (JAVA_HOME, PATH)
+Use macros j7/j8/j9/j9z (Zulu) to switch quickly between Javas (JAVA_HOME, PATH)
 "
 ```
 
-This requires that **all those variables have short path (no spaces)** which can be checked
-by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly.
+This requires that **all those variables have short path (or at least no spaces)** which can be checked
+by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly. This also uses `cygpath`,
+but that one is available as part of git bash environment.
 
 ## Aliases
 
@@ -61,10 +63,13 @@ My `.bashrc` (can be in `.profile` instead, but I guess there is no harm in `.ba
 alias eb="vim ~/.bashrc && . ~/.bashrc"
 
 # git aliases
+alias gp="git pull"
 alias gl="git lg" # lg is already git alias
 alias gs="git status"
+alias gca="git commit -am"
 
 # grep aliases
+alias gi="grep -i"
 alias gr="grep -r"
 alias gri="grep -ri"
 
