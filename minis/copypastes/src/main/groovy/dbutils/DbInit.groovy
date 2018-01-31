@@ -148,7 +148,9 @@ class DbInit {
 	private static Map purifySelector(Map map) {
 		def result = [:]
 		for (String key : map.keySet()) {
-			if (key.startsWith('#')) continue // skip complicated selectors
+			if (key.startsWith('#')) {
+				continue
+			} // skip complicated selectors
 
 			result.put(key, map.get(key))
 		}
@@ -255,8 +257,12 @@ class DbInit {
 			if (colWithOp.startsWith('#')) {
 				sb.append(colWithOp.substring(1).trim())
 					if (value) {
+					if (value instanceof Collection) {
+						params.addAll(value)
+					} else {
 						params.add(value)
 					}
+				}
 			} else if (value != null || !where) {
 				sb.append(colWithOp).append(' =')
 			sb.append(' ?')
@@ -276,11 +282,15 @@ class DbInit {
 		def query = 'insert into ' + tableName +
 			' (' + insertColumns + ') values (' + questionMarks + ')'
 		debug(query, insertParams)
-		if (dryRun) return null
+		if (dryRun) {
+			return null
+		}
 
 		inserts++
 		def insert = sql.executeInsert(query, insertParams)
-		if (!insert) return null
+		if (!insert) {
+			return null
+		}
 
 		// lastly we extract single key of possible, otherwise we return the whole row
 		// of returned autoincrement values (unlikely)
@@ -372,7 +382,9 @@ class DbInit {
 		println "\ninserts = $inserts"
 		println "updates = $updates (rows $updatedRows)"
 		println "deletes = $deletes (rows $deletedRows)"
-		if (dryRun) println "DRY RUN, no updates to DB made"
+		if (dryRun) {
+			println "DRY RUN, no updates to DB made"
+		}
 	}
 
 	/** Reading password with System.console, falling back to System.in, if console is null. */
