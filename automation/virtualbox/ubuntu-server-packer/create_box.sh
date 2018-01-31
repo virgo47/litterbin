@@ -10,7 +10,7 @@ fi
 
 vagrant box add --force ubuntu-server-dev ubuntu-server-virtualbox.box
 
-echo << EOF
+cat << EOF
 DONE!
 
 Now head to your vagrant project directory and use it:
