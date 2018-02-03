@@ -6,7 +6,9 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder '.', '/vagrant', type: 'nfs'
 
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "ubuntu-server-dev"
+# Setting VM name here is actually counterproductive, as all the VMs for the box will have
+# the same name and collide. Without it Vagrant uses dir name + timestamp, which is preferable.
+#    vb.name = "ubuntu-server-dev"
     vb.gui = false
   end
 end
