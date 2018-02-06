@@ -70,6 +70,8 @@ alias gp="git pull --all"
 alias gpr="git pull --all --rebase"
 # git pull but without rebase (overriding pull.rebase=true from config)
 alias gpm="git pull --all --no-rebase"
+# git pull with rebase and autostash when local changes are in the way
+alias gpa="git pull --all --rebase --autostash"
 alias gf="git fetch --all"
 alias gl="git lg" # lg is already git alias: log with one-line format
 alias gu="git lu" # log not-pushed yet
