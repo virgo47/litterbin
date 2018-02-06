@@ -105,8 +105,8 @@ But it can be found in `~/.gitconfig`:
 [log]
         date = format:%Y-%m-%d %H:%M
 [alias]
-        lg = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-        lgg = log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+        ll = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+        lg = log --all --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
         lu = log @{u}.. --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
         st = status -sb
 [pull]
