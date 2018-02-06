@@ -3,7 +3,7 @@
 ## Switching Java versions
 
 Switching between Java versions (JAVA_HOME and PATH) with jX macros with `~/.profile`:
-```
+```bash
 # This script assumes existing environment variables in Windows.
 # These MUST have short path format as spaces in JAVA_HOME path are strongly discouraged.
 
@@ -45,7 +45,7 @@ function setjava() {
 }
 
 echo
-j8
+setjava `cygpath $JAVA_HOME`
 echo "
 Use macros j7/j8/j9/j9z (Zulu) to switch quickly between Javas (JAVA_HOME, PATH)
 "
@@ -58,15 +58,23 @@ but that one is available as part of git bash environment.
 ## Aliases
 
 My `.bashrc` (can be in `.profile` instead, but I guess there is no harm in `.bashrc`):
-```
+```bash
 # Edit Bash RC
 alias eb="vim ~/.bashrc && . ~/.bashrc"
 
 # git aliases
-alias gp="git pull"
-alias gl="git lg" # lg is already git alias
-alias gs="git status"
-alias gca="git commit -am"
+#
+# --all to update all tracked branches
+alias gp="git pull --all"
+# git pull with rebase (this better be default using global config)
+alias gpr="git pull --all --rebase"
+# git pull but without rebase (overriding pull.rebase=true from config)
+alias gpm="git pull --all --no-rebase"
+alias gf="git fetch --all"
+alias gl="git lg" # lg is already git alias: log with one-line format
+alias gu="git lu" # log not-pushed yet
+alias gs="git st" # st is already git alias: status -sb (short + branch info)
+alias gca="git commit -m"
 
 # grep aliases
 alias gi="grep -i"
@@ -99,7 +107,10 @@ But it can be found in `~/.gitconfig`:
 [alias]
         lg = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
         lgg = log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-        lu = log @{u}..
+        lu = log @{u}.. --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+        st = status -sb
+[pull]
+        rebase = true
 ```
 
 Global name/email settings can be corporate values for corporate computer, which means that in
