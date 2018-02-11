@@ -73,10 +73,15 @@ alias gpm="git pull --all --no-rebase"
 # git pull with rebase and autostash when local changes are in the way
 alias gpa="git pull --all --rebase --autostash"
 alias gf="git fetch --all"
-alias gl="git lg" # lg is already git alias: log with one-line format
-alias gu="git lu" # log not-pushed yet
+# lg is already git alias: log with one-line format
+alias gl="git lg"
+# HEAD and upstream, shows also fetched commits not on local branch
+# notice the quoting to avoid early backtick evaluation
+alias gll='git lg `git rev-parse --abbrev-ref HEAD @{u}`'
+# log not-pushed yet (local, but not in upstream)
+alias gu="git lu"
 alias gs="git st" # st is already git alias: status -sb (short + branch info)
-alias gca="git commit -m"
+alias gca="git commit -am"
 
 # grep aliases
 alias gi="grep -i"
@@ -98,7 +103,7 @@ alias.lu=log @{u}..
 
 But it can be found in `~/.gitconfig`:
 ```
-[user]
+[user]                              
         name = virgo47
         email = virgo47@gmail.com
 [core]
@@ -108,7 +113,7 @@ But it can be found in `~/.gitconfig`:
         date = format:%Y-%m-%d %H:%M
 [alias]
         ll = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-        lg = log --all --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+        lg = log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
         lu = log @{u}.. --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
         st = status -sb
 [pull]
