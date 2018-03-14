@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+archivesBaseName = 'hello-app'
+version = '0.1'
+ext.mainClassName = 'somepkg.HelloWorld'
+
+println "Main-class: $mainClassName"
+
+jar {
+  manifest {
+    attributes \
+      'Class-Path': configurations.compile.collect {it.getName()}.join(' '),
+      'Main-Class': mainClassName
+    }
+}

@@ -1,5 +1,6 @@
+# Handy commands
 
-## Netowrking
+## Networking
 
 * Check programs listening on Windows: `netstat -abno | grep -i listen`
 

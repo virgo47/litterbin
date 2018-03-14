@@ -1,0 +1,3 @@
+cat build/tmp/jar/MANIFEST.MF
+unzip -p build/libs/hello-app-0.1.jar META-INF/MANIFEST.MF
+java -jar build/libs/hello-app-0.1.jar

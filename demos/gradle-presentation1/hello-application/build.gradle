@@ -1,0 +1,4 @@
+apply plugin: 'application'
+applicationName = 'hello-app'
+version = '0.1'
+mainClassName = 'somepkg.HelloWorld'
