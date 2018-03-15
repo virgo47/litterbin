@@ -1,0 +1,5 @@
+apply plugin: 'java'
+
+compileJava {
+    options.compilerArgs = ['--module-path', classpath.asPath]
+}

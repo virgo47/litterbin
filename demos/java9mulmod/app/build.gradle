@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':common')
+}
+
+compileJava {
+    options.compilerArgs = ['--module-path', classpath.asPath]
+}
