@@ -8,8 +8,8 @@
 .idea/
 .gradle/
 
-*/*/target/
-*/*/build/
+target/
+build/
 */*/out/
 
 # packer output artifacts
