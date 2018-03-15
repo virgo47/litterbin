@@ -1,0 +1,12 @@
+println "\nCONFIGURATION phase"
+println "this: ${this} (${this.class})"
+
+println "\nProperties:"
+properties.sort {it.key}.each {k,v -> println "$k = ${k != 'properties' ? v : '...'}"}
+
+println "\nExtra properties:"
+ext.properties.sort {it.key}.each {k,v -> println "$k = ${k != 'properties' ? v : '...'}"}
+
+// Binding is empty
+//println "\nBinding:"
+//this.binding.properties.sort({it.key}).each {k,v -> println "$k = $v"}
