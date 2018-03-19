@@ -1,0 +1,11 @@
+/*
+ * See: https://docs.gradle.org/current/userguide/build_environment.html
+ */
+
+println "System env:"
+System.getenv().sort({ it.key }).each { k, v -> println "$k = $v" }
+
+println "\n================\nSystem properties:"
+System.properties.sort({ it.key }).each { k, v -> println "$k = $v" }
+println "================ END of System properties"
+
