@@ -4,4 +4,4 @@
 
 TODO: add Trusted manager skipping checks
 
-See (../../../../../../notes/security)[notes/security] for more.
+See [notes/security](../../../../../../notes/security) for more.

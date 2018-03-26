@@ -32,7 +32,7 @@ Then we can run Maven (here with specific settings XML as well) using specific t
 mvn -s ~/.m2/settings-xy.xml -Djavax.net.ssl.trustStore=../../litterbin/jssecacerts clean
 ```
 
-Sources: (../../minis/copypastes/src/main/java/tools/InstallCert.java)[InstallCert.java]
+Sources: [InstallCert.java](../../minis/copypastes/src/main/java/tools/InstallCert.java)
 
 ## Using root certificate
 
