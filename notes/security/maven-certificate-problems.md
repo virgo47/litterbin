@@ -1,19 +1,4 @@
-# Keytool and certificates
-
-`InstallCert.java` based on: http://nodsw.com/blog/leeland/2006/12/06-no-more-unable-find-valid-certification-path-requested-target
-
-To see the details of a certificate:
-
-```
-keytool -keystore jssecacerts -storepass changeit -list -v -alias <cert-alias>
-```
-
-To print it in RFC style replace `-v` with `-rfc`.
-
-More about this and also how to extract public key from the certificate:
-http://stackoverflow.com/q/10103657/658826
-
-## Maven problems with certificate
+# Maven problems with certificate
 
 Using HTTPS Maven build can throw this:
 
@@ -38,7 +23,7 @@ What we need is some certificate that would make it run. Our options are:
 * Putting some root certificate into a trust store.
 * Finally, let Maven ignore the certificate validation.
 
-### Using certificate from the server
+## Using certificate from the server
 
 We use `InstallCert` to download the certificate from the server and put it into the trust keystore.
 Then we can run Maven (here with specific settings XML as well) using specific trustStore:
@@ -47,13 +32,15 @@ Then we can run Maven (here with specific settings XML as well) using specific t
 mvn -s ~/.m2/settings-xy.xml -Djavax.net.ssl.trustStore=../../litterbin/jssecacerts clean
 ```
 
-### Using root certificate
+Sources: (../../minis/copypastes/src/main/java/tools/InstallCert.java)[InstallCert.java]
+
+## Using root certificate
 
 Probably the way how to get it into the trust store is the same, I just couldn't try it
 as I didn't have any reasonable root CA.
 
 
-### Ignoring certificate validation
+## Ignoring certificate validation
 
 We can add the following to the `mvn` command line:
 
