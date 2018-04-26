@@ -1,5 +1,6 @@
 package dbutils
 
+import java.nio.charset.StandardCharsets
 import java.sql.Clob
 
 import static dbutils.DbInit.list
@@ -15,9 +16,12 @@ class SqlDataExporter {
 
 	def dumpTables(String outFileName, String... tableSpecs) {
 		println "\nPreparing $outFileName"
-		sqlOutput = new FileWriter(dir + outFileName)
-		sqlOutput.println "-- noinspection SqlResolveForFile"
-		sqlOutput.println "-- Generated with SqlExporterAsInsert.groovy"
+		sqlOutput = new BufferedWriter(
+			new OutputStreamWriter(
+				new FileOutputStream(dir + outFileName), StandardCharsets.UTF_8))
+
+		sqlOutput.println '-- noinspection SqlResolveForFile'
+		sqlOutput.println '-- Generated with SqlDataExporter.groovy\n'
 		tableSpecs.each {
 			dumpTable(it)
 		}
@@ -34,20 +38,30 @@ class SqlDataExporter {
 
 	def dumpTable(String tableSpec) {
 		println "Dumping: $tableSpec"
+        sqlOutput.println "\n-- Table: $tableSpec"
 		def tableName = tableSpec.split(/\s+/)[0]
 
 		def list = list(tableSpec)
+		def count = 0
+		def insertHeaderEach = 100
+		def total = list.size()
 		list.each {
+			if (count % insertHeaderEach == 0) {
 			sqlOutput.print "INSERT INTO $tableName ("
 			sqlOutput.print it.keySet()
 				.collect { columnName((String) it) }
 				.join(", ")
-			sqlOutput.print(it.size() > 5 ? ')\n' : ') ')
-			sqlOutput.print 'VALUES ('
+				sqlOutput.print ')\nVALUES\n ('
+			}
 			sqlOutput.print it.values()
 				.collect { processValue(it) }
 				.join(", ")
+			count++
+			if (count % insertHeaderEach == 0 || count == total) {
 			sqlOutput.println ');'
+			} else {
+				sqlOutput.print '),\n  ('
+			}
 		}
 		sqlOutput.println()
 		sqlOutput.flush()
