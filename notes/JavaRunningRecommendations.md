@@ -7,7 +7,7 @@ Know various JVM flags:
 * http://blog.codecentric.de/en/2012/07/useful-jvm-flags-part-4-heap-tuning/
 * http://blog.codecentric.de/en/2012/08/useful-jvm-flags-part-5-young-generation-garbage-collection/
 
-## Basic flags for running Java
+## Basic flags for running Java 8 (and before)
 
 * `-server` pays off after just couple of seconds, but is probably obsolete now with Java 8 and on,
 as its tiered compilation is kinda best-of client/server worlds two-in-one magic combo (without
@@ -27,17 +27,35 @@ enough disk space, we can rotate GC logs with `-XX:+UseGCLogFileRotation
 So the command line may look like this:
 
 ```
-java -server -showversion -XX:+PrintCommandLineFlags -XX:+HeapDumpOnOutOfMemoryError \
-  -XX:HeapDumpPath=/var/-XX:OnOutOfMemoryError="sh ~/cleanup.sh" -verbose:gc \
-  -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -Xloggc:/var/tmp/heapdumps
+java -server -showversion -XX:+PrintCommandLineFlags \
+  -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/ -XX:OnOutOfMemoryError="sh ~/cleanup.sh" \
+  -verbose:gc -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -Xloggc:/var/tmp/heapdumps
 ```
 
-## Java 9 JVM logging
 
-See changes in: https://www.infoq.com/presentations/java-9-gc
+## Java 9+ startup flags
 
-We can use multiple of `-Xlog:<tag>[=level][:[<output>][:<decorators>]]` options.
+This is just a work in progress:
+```
+java -showversion -XX:+PrintCommandLineFlags \
+  -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOG_DIR \
+  -Xlog:gc:$LOG_DIR/gc.log:time,uptime,level,tags,tid  
+```
 
+Option `-Xlog:gc:...` seems to sum up GC nicely, `:gc*:` is very verbose with not that much
+additional information (mostly just better precision).
+When file output for `Xlog` is used without `output-options` (behind decorators):
+
+* Default `filecount` (rotation) is 5 files (current + suffixes 0-4).
+* Default `filesize` is 20MB.
+
+Both can be found using (you may want to remove `gc.log` afterwards):
+```
+java -Xlog:logging=debug:gc.log -version && grep file gc.log
+```
+
+See [this blog](https://blog.codefx.org/java/unified-logging-with-the-xlog-option/) for more
+information about Unified JVM Logging.
 
 ## Monitoring
 
