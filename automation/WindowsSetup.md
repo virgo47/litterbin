@@ -167,8 +167,21 @@ as [described here](http://stackoverflow.com/a/35109007/658826).
 ## Git Bash Here in Total Commander
 
 Based on [my blog](https://virgo47.wordpress.com/2013/05/05/git-bash-here-in-console2-in-total-commander-with-keyboard-shortcut-hotkey/)
-where it is for Console2 - this time for ConEmu. Setup for user command in Total Commander is (as
-found in `AppData\Roaming\GHISLER\usercmd.ini`):
+where it is for Console2 - this time for ConEmu.
+Setup for user command in Total Commander is (as found in `AppData\Roaming\GHISLER\usercmd.ini`):
+
+```
+[em_git_bash_here]
+button=C:\Program Files\Git\git-bash.exe
+cmd=""C:\Program Files\ConEmu\ConEmu64.exe""
+param=/cmd {Git bash}
+menu=Git Bash Here
+```
+
+This counts on existing ConEmu task called "Git bash", so I recommend setting tasks first.
+
+Older version with `-run` that stopped working suddenly, `/cmd` seems to work better now
+(but even better/easier with ConEmu task as above):
 
 ```
 [em_git_bash_here]
@@ -179,7 +192,9 @@ menu=Git Bash Here
 ```
 
 `-run` is important otherwise every space separated parameter would be interpreted as a new
-console and using quotes around everything wouldn't work either. Then also add this to `wincmd.ini`
+console and using quotes around everything wouldn't work either.
+
+Then also add this to `wincmd.ini`
 in the same directory like `usercmd.ini` (both `Alt+B` and `Ctrl+B` launch Git Bash):
 
 ```
