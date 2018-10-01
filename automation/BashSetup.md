@@ -7,36 +7,37 @@ Switching between Java versions (JAVA_HOME and PATH) with jX macros with `~/.pro
 # This script assumes existing environment variables in Windows.
 # These MUST have short path format as spaces in JAVA_HOME path are strongly discouraged.
 
-JAVA7_HOME=`cygpath $JAVA7_HOME`
 JAVA8_HOME=`cygpath $JAVA8_HOME`
 JAVA9_HOME=`cygpath $JAVA9_HOME`
-JAVA9ZULU_HOME=`cygpath $JAVA9ZULU_HOME`
+JAVA10_HOME=`cygpath $JAVA10_HOME`
+JAVA11_HOME=`cygpath $JAVA11_HOME`
 
 function fixpath() {
   PATH=`echo $PATH |
     sed -e "s%/c/PROGRA~./Java/jdk[^:]*%$JAVA_HOME/bin%gI" \
-      -e "s%/c/work/tools/zulu[^:]*%$JAVA_HOME/bin%gI"`
+      -e "s%/c/work/tools/java/zulu[^:]*%$JAVA_HOME/bin%gI"`
   echo "Current JAVA_HOME=$JAVA_HOME"
+  if ! type -P java &> /dev/null; then
+    echo "Adding java to PATH"
+    PATH=$JAVA_HOME/bin:$PATH
+  fi
   java -version
 }
 
-function j7() {
-  JAVA_HOME=$JAVA7_HOME
-  fixpath
-}
-
 function j8() {
-  JAVA_HOME=$JAVA8_HOME
-  fixpath
+  setjava $JAVA8_HOME
 }
 
 function j9() {
-  JAVA_HOME=$JAVA9_HOME
-  fixpath
+  setjava $JAVA9_HOME
 }
 
-function j9z() {
-  setjava $JAVA9ZULU_HOME
+function j10() {
+  setjava $JAVA10_HOME
+}
+
+function j11() {
+  setjava $JAVA11_HOME
 }
 
 function setjava() {
@@ -45,9 +46,10 @@ function setjava() {
 }
 
 echo
-setjava `cygpath $JAVA_HOME`
+j11
+#setjava `cygpath $JAVA_HOME`
 echo "
-Use macros j7/j8/j9/j9z (Zulu) to switch quickly between Javas (JAVA_HOME, PATH)
+Use macros j8-11 to switch quickly between Javas (JAVA_HOME, PATH)
 "
 ```
 
@@ -64,6 +66,9 @@ alias eb="vim ~/.bashrc && . ~/.bashrc"
 
 # git aliases
 #
+alias gb="git checkout"
+alias gbm="git checkout master"
+alias gbd="git checkout develop"
 # --all to update all tracked branches
 alias gp="git pull --all"
 # git pull with rebase (this better be default using global config)
@@ -82,11 +87,16 @@ alias gll='git lg `git rev-parse --abbrev-ref HEAD @{u}`'
 alias gu="git lu"
 alias gs="git st" # st is already git alias: status -sb (short + branch info)
 alias gca="git commit -am"
+# commits resolved files after merge using default/prepared merge message
+alias gcm="git commit -a --no-edit"
 
 # grep aliases
 alias gi="grep -i"
 alias gr="grep -r"
 alias gri="grep -ri"
+
+# gradle-wrapper-wrapper with plain console output (useful for redirecting)
+alias gwp="gw --console plain"
 
 echo "Aliases set up:"
 alias
