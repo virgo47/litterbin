@@ -31,6 +31,12 @@ The final command may look like this:
     ```
     ssh -p 2222 -i .vagrant/machines/default/virtualbox/private_key \
       -l vagrant -o StrictHostKeyChecking=no localhost
+    # or perhaps more general (but horrible with so many vagrant calls)
+    ssh -p `vagrant ssh-config | grep ' Port'  | cut -d' ' -f4` \
+     -i `vagrant ssh-config | grep ' IdentityFile ' | cut -d' ' -f4` \
+     -l `vagrant ssh-config | grep ' User ' | cut -d' ' -f4` \
+     -o StrictHostKeyChecking=no \
+     `vagrant ssh-config | grep ' HostName ' | cut -d' ' -f4`
     ```
 
 * ...
