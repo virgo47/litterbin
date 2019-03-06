@@ -5,10 +5,11 @@ Start with Chocolatey package system - in *administrative* cmd:
 @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
 ```
 
+All the following commands are with `cmd` syntax (e.g. `"` instead of `'`).
 By default Chocolatey downloads into TEMP directory, which results in repeated downloads, when
 you experiment a lot with the same package. You may point it to a specific directory like this:
 ```
-choco config set cacheLocation 'c:\ProgramData\Chocolatey\tmp-cache'
+choco config set cacheLocation "c:\ProgramData\Chocolatey\tmp-cache"
 ```
 Also [see here](https://github.com/chocolatey/choco/wiki/How-To-Change-Cache). As a result
 you have to take care of the directory and maybe clean it up sometimes. You can also pack this
@@ -28,59 +29,60 @@ We can install and download virtually any other favourite tool (lines with `#` c
 in PowerShell/Boxstarter Shell, in `cmd` you need to strip the end and replace `'` with `"`
 as needed):
 ```
-cinst -y 7zip.commandline
-cinst -y notepad2
-cinst -y notepadreplacer -installarguments '/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent'
-
-cinst -y firefox
-
-# developer's tools, probably for host, not for virtual guest
-cinst -y git
-cinst -y vagrant
-cinst -y packer
-cinst -y StrawberryPerl
-```
-
-Untested:
-```
-cinst -y unzip
-cinst -y vim
-cinst -y rapidee
 cinst -y classic-shell
-
-cinst -y Handle
-cinst -y procexp
-
+cinst -y firefox
+cinst -y notepad2
+cinst -y notepadreplacer -installarguments "/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
+cinst -y TotalCommander
+cinst -y rapidee
 cinst -y GoogleChrome
 cinst -y FoxitReader
-
-cinst -y ConEmu
-cinst -y putty
-cinst -y winscp
-cinst -y TotalCommander
-
-cinst -y gpg4win-light # see the note lower
-cinst -y tortoisesvn
-cinst -y openvpn-community
-cinst -y ruby
-cinst -y licecap
-cinst -y virtualbox
-cinst -y nodejs
 cinst -y k-litecodecpackfull
-cinst -y ghc # Haskell
 cinst -y foobar2000
-cinst -y wireshark # instal WinPcap in advance manually, seems the chocolatey package is broken
-
 cinst -y gimp
 cinst -y fsviewer
 cinst -y imagemagick
 ```
+Classic Shell set to Aero, small icons.
 
-Notes:
-* ghc is haskell
-* gpg4win-light -- I'm not sure here, there is also Gpg4win, but can light be enough?
-Also, there is `gpg` installed with Git, is it sufficient? I had some gpg collisions before,
-but maybe the situation changed.
+Developer's tools mandatory:
+```
+cinst -y git
+cinst -y ConEmu
+cinst -y putty
+cinst -y winscp
+cinst -y 7zip.commandline
+cinst -y unzip
+cinst -y vim
+```
+
+Other tools for virtualization and other experiments:
+```
+cinst -y virtualbox
+cinst -y vagrant
+cinst -y packer
+```
+
+Programming (`ghc` is haskell):
+```
+cinst -y StrawberryPerl
+cinst -y ruby
+cinst -y ghc
+```
+
+The rest:
+```
+cinst -y Handle
+cinst -y procexp
+cinst -y gpg4win-light
+cinst -y tortoisesvn
+cinst -y openvpn-community
+cinst -y licecap
+cinst -y nodejs-lts
+
+REM instal WinPcap in advance manually, seems the chocolatey package is broken
+cinst -y wireshark
+```
 
 We can install various GnuWin32 packages:
 ```
