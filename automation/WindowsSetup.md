@@ -42,6 +42,7 @@ cinst -y foobar2000
 cinst -y gimp
 cinst -y fsviewer
 cinst -y imagemagick
+cinst -y slack
 ```
 Classic Shell set to Aero, small icons.
 
@@ -54,6 +55,8 @@ cinst -y winscp
 cinst -y 7zip.commandline
 cinst -y unzip
 cinst -y vim
+cinst -y tortoisesvn
+cinst -y wget
 ```
 
 Other tools for virtualization and other experiments:
@@ -63,19 +66,30 @@ cinst -y vagrant
 cinst -y packer
 ```
 
+Greenshot, first [disable PrintScreen key in OneDrive](https://superuser.com/a/1239937): 
+```
+cinst -y greenshot
+```
+
 Programming (`ghc` is haskell):
 ```
 cinst -y StrawberryPerl
 cinst -y ruby
 cinst -y ghc
+cinst -y python3
+```
+
+With Python 3 (and PIP) we can install HTTPie *in non-admin shell*:
+```
+pip install --upgrade pip setuptools httpie
 ```
 
 The rest:
 ```
 cinst -y Handle
 cinst -y procexp
+cinst -y ditto
 cinst -y gpg4win-light
-cinst -y tortoisesvn
 cinst -y openvpn-community
 cinst -y licecap
 cinst -y nodejs-lts
@@ -94,9 +108,58 @@ cinst -y gnuwin32-sed.install
 **But instead** we can use existing Git and add `c:\Program Files\Git\usr\bin` and
 `c:\Program Files\Git\mingw64\bin` to the `PATH` (especially the first one).
 
+## Installing fonts
+
+Source * Pro fonts by Adobe, `svn` command necessary to avoid manual download.
+Uses SVN trick to download subdirectory of GitHub project (`--force` needed if directory exists).
+Go to some temporary/download directory and:
+```
+svn export https://github.com/adobe-fonts/source-sans-pro/branches/release/TTF
+svn export --force https://github.com/adobe-fonts/source-serif-pro/branches/release/TTF
+svn export --force https://github.com/adobe-fonts/source-code-pro/branches/release/TTF
+```
+
+After that open `TTF` folder, select all, right-click, install fonts.
+
+
+## More Windows settings
+
+### Wallpapers and logon screen
+
+* Right-click on the desktop , Personalize
+* **Background** section, **Background** select to **Slideshow** and choose the directory with my wallpapers (perhaps directly from OneDrive?)
+* **Lock screen** section, choose a picture and check **Show lock screen background picture on the sign-in screen**.
+* **Colors** section, switch of **Transparency effects**.
+
+### Disable snap assist
+
+**Settings** (`Win+I`), **System**, **Multitasking** section, toggle off **When I snap a window...**
+
+### Firefox setup
+
+Most things can be set from `about:config` URL (see parentheses, valid for Firefox 65):
+
+* Toolbar right-click, Customize... add search bar (`browser.search.widget.inNavBar = true`)
+* Options:
+	* Ask to save logins and passwords for websites OFF (`signon.rememberSignons = false`)
+	* Show search suggestions in address bar results OFF (`browser.urlbar.suggest.searches = false`)
+	* Restore previous session (`browser.startup.page = 3`)
+* More about:config (NTLM/Windows SSO + certificates):
+	* `security.enterprise_roots.enabled = true`
+	* `network.automatic-ntlm-auth.trusted-uris = company.com,hostnames-without-domain`
+	* `network.negotiate-auth.trusted-uris = ...`
+
+
 ## ConEmu settings and tips
 
+Best thing is to export settings from previous computer and import XML on the new one.
+
+What I typically change:
+
 * Go to Settings `Win+Alt+P`
+* In **General**:
+	* **Choose your startup task...** select - for me it's **Git bash**.
+	* 
 * In **Keys & Macro**:
 	* Global hotkey for *Minimize/Restore* `` Ctrl+` `` collides with IDEA, change to `<None>`
 (using `Win+2` anyway).
@@ -104,29 +167,16 @@ cinst -y gnuwin32-sed.install
 	* Open new console popup is `Win+N` (good)
 	* Scroll buffer one page up/down - change to `Shift+PgUp/Dn` (`Ctrl` by default) 
 	* In **Keyboard** subscreen uncheck **Win+Number - activate console**.
-* In **Features** check **Inject ConEmuHk** to support colors in shells properly
-* Settings XML can be placed next to `conemu.exe` and will be loaded instead of registry
-* Set it [as default term] (even if we run `cmd` from Start it will use ConEmu). Go to
-**Integration**, **Default term** and check first checkboxes (Force..., Register..., Leave in TSA).
+* In **Features** check **Inject ConEmuHk** to support colors in shells properly.
+* Settings XML can be placed next to `conemu.exe` and will be loaded instead of registry.
+* Set it [as default term] (even if we run `cmd` from Start it will use ConEmu).
+Go to **Integration**, **Default term** and check first checkboxes (Force..., Register..., Leave in TSA).
 To support `cmd` in ConEmu from Total Commander as well, change the list of hooked executables to:
 `explorer.exe|totalcmd.exe` (add more at will).
+* In **Startup**/**Tasks**:
+	* Choose your favourite task (e.g. **Git bash**) and set it as default for new console,
+	and/or set some **Hotkey** for it (e.g. `Alt+B`).
 
-### Problem - Pin to task bar for Admin
-
-If we pin `powershell` (or `cmd.exe`) to the task bar, it will start in ConEmu, but if we change
-its properties **Shortcut/Advanced...** and check **Run as administrator** it will not use ConEmu
-anymore. On the other hand, if we add `-new_console:a` after the command in **Shortcut**,
-**Target** input field it runs as Admin - but it creates new taskbar icon not on the same position
-(e.g. I can't use `Win+2` to switch to it, instead it creates new tab with new Admin PowerShell).
-
-Better solution is to use shortcut with target
-`"c:\Program Files\ConEmu\ConEmu64.exe" powershell.exe -new_console:a` (ConEmu location with
-Chocolatey installation, probably default as well) **and** set **Run as administrator** via
-shortcut (advanced) settings.
-
-If we prefer `cmd.exe` instead, just use that instead of `powershell.exe`.
-
-TODO: How to script this?
 
 ### Problem - refresh of environment variables
 
@@ -167,6 +217,8 @@ as [described here](http://stackoverflow.com/a/35109007/658826).
 
 
 ## Git Bash Here in Total Commander
+
+Better yet is to copy `usercmd/wincmd.ini` from old computer/backup to a new one.
 
 Based on [my blog](https://virgo47.wordpress.com/2013/05/05/git-bash-here-in-console2-in-total-commander-with-keyboard-shortcut-hotkey/)
 where it is for Console2 - this time for ConEmu.
