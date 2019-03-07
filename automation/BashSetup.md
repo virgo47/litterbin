@@ -2,60 +2,46 @@
 
 ## Switching Java versions
 
-Switching between Java versions (JAVA_HOME and PATH) with jX macros with `~/.profile`:
+Switching between Java versions (`JAVA_HOME` and `PATH`) with `setjava XY` macros in `~/.profile`:
 ```bash
 # This script assumes existing environment variables in Windows.
 # These MUST have short path format as spaces in JAVA_HOME path are strongly discouraged.
 
-JAVA8_HOME=`cygpath $JAVA8_HOME`
-JAVA9_HOME=`cygpath $JAVA9_HOME`
-JAVA10_HOME=`cygpath $JAVA10_HOME`
-JAVA11_HOME=`cygpath $JAVA11_HOME`
+function setjava() {
+  JAVA_HOME_VAR="JAVA${1}_HOME"
+  JAVA_HOME_VAL="${!JAVA_HOME_VAR}"
+  if [ -z "$JAVA_HOME_VAL" ]; then
+    echo "No value set for $JAVA_HOME_VAR"  ci
+    return
+  fi
 
-function fixpath() {
+  echo "Using $JAVA_HOME_VAR with value $JAVA_HOME_VAL"
+  JAVA_HOME=`cygpath $JAVA_HOME_VAL`
+  # Now to fix PATH to new JAVA_HOME (TOOLS_HOME is defined in environment)
   PATH=`echo $PATH |
     sed -e "s%/c/PROGRA~./Java/jdk[^:]*%$JAVA_HOME/bin%gI" \
-      -e "s%/c/work/tools/java/zulu[^:]*%$JAVA_HOME/bin%gI"`
-  echo "Current JAVA_HOME=$JAVA_HOME"
-  if ! type -P java &> /dev/null; then
+      -e "s%/$TOOLS_HOME/java/jdk[^:]*%$JAVA_HOME/bin%gI"`
+  if ! type -p java &> /dev/null; then
     echo "Adding java to PATH"
     PATH=$JAVA_HOME/bin:$PATH
   fi
   java -version
 }
 
-function j8() {
-  setjava $JAVA8_HOME
-}
-
-function j9() {
-  setjava $JAVA9_HOME
-}
-
-function j10() {
-  setjava $JAVA10_HOME
-}
-
-function j11() {
-  setjava $JAVA11_HOME
-}
-
-function setjava() {
-  JAVA_HOME=$1
-  fixpath
-}
+echo "Use macros \"setjava <version>\" to switch between Javas (JAVA_HOME, PATH).
+Version number is from JAVA<version>_HOME. Available Javas:"
+printenv | grep '^JAVA.*_HOME=' || echo "None? Do something about it!"
 
 echo
-j11
-#setjava `cygpath $JAVA_HOME`
-echo "
-Use macros j8-11 to switch quickly between Javas (JAVA_HOME, PATH)
-"
+if [ -n "$JAVA_HOME" ]; then
+  setjava ''
+  echo
+fi
 ```
 
-This requires that **all those variables have short path (or at least no spaces)** which can be checked
-by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly. This also uses `cygpath`,
-but that one is available as part of git bash environment.
+This requires that **all those variables have short path (or at least no spaces)** which can be
+checked by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly. This also
+uses `cygpath`, but that one is available as part of git bash environment.
 
 ## Aliases
 
@@ -104,30 +90,23 @@ alias
 
 ## Git
 
-This is one-off configuration of Git:
-```
-alias.lg=log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-alias.lgg=log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-alias.lu=log @{u}..
-```
-
-But it can be found in `~/.gitconfig`:
+Configuration of Git can be found in `~/.gitconfig`:
 ```
 [user]                              
-        name = virgo47
-        email = virgo47@gmail.com
+	name = virgo47
+	email = virgo47@gmail.com
 [core]
-        autocrlf = true
+	autocrlf = true
 [http]
 [log]
-        date = format:%Y-%m-%d %H:%M
+	date = format:%Y-%m-%d %H:%M
 [alias]
-        ll = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-        lg = log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-        lu = log @{u}.. --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
-        st = status -sb
+	ll = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+	lg = log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+	lu = log @{u}.. --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+	st = status -sb
 [pull]
-        rebase = true
+	rebase = true
 ```
 
 Global name/email settings can be corporate values for corporate computer, which means that in
