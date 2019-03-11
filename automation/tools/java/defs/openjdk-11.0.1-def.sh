@@ -20,5 +20,5 @@ JDK_URL="${!JDK_URL_VAR}"
 JDK_DIR="${!JDK_DIR_VAR}"
 JDK_SUM="${!JDK_SUM_VAR}"
 
-[ "$_OS" = "darwin" ] && CHECKSUM_APP="shasum -r" || CHECKSUM_APP=sha256sum
+[ "$_OS" = "darwin" ] && CHECKSUM_APP="shasum -a 256" || CHECKSUM_APP=sha256sum
 [[ "$JDK_URL" == *.zip ]] && UNPACK_APP=unzip || UNPACK_APP="tar xzvf"
