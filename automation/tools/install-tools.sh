@@ -28,7 +28,8 @@ if [ ! -f "$JAVA_HOME/bin/java" ]; then
 			exit 1
 		fi
 	fi
-	$UNPACK_APP jdk.tmp
+	$UNPACK_APP jdk.tmp ${UNPACK_APP_TAIL_OPTS:-}
+	${AFTER_UNPACK_COMMAND:-}
 	rm jdk.tmp
 else
 	echo

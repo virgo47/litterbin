@@ -47,6 +47,8 @@ if [ -n "$JDK_DIR" ]; then
   export JDK_URL
   export JDK_SUM
   export UNPACK_APP
+  export UNPACK_APP_TAIL_OPTS
+  export AFTER_UNPACK_COMMAND
   export CHECKSUM_APP
 
   bash `dirname $BASH_SOURCE`/install-tools.sh ${JDK_TYPE}
