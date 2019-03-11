@@ -1,0 +1,42 @@
+= Skripts
+
+Various scripts to get me up and running with development:
+
+* `ci-build.sh` goes to project root and is main script for GitLab (or other) CI/CD;
+* `install-tools.sh` and `setenv.sh` go into `tools` subdir.
+
+Scripts in `tools-deps-setup` are to make the machine ready to run my CI/setenv scripts.
+It can be CI server or developer's machine, etc.
+
+== Javy installation
+
+Script `setenv.sh` should be sourced (run in the current shell) to set the environment:
+----
+. tools/setenv.sh
+----
+
+It sets JDK, that is `JAVA_HOME` variable (`PATH` is not changed as Gradle/Maven doesn't care).
+
+It can be called with other JDK version like:
+----
+. tools/setenv.sh zulujdk-8u202
+----
+
+This installs JDK based on definition file `$TOOLS_HOME/java/defs/$1-def.sh`,
+where `$1` is the argument (`zulujdk-8u202` in our case).
+These definition files can be managed globally, like in `tools/java/defs` directory here.
+The point is to allow reliable download and unzip/install of a precise tool version anytime.
+Download URL can change (and will be redefined), but checksum should be the same (although
+archive format can technically change, but it's unlikely).
+Environment variable `TOOLS_HOME` can be set in user's environment, otherwise it falls back
+to `$HOME/tools`.
+
+== What about other tools?
+
+Currently `setenv.sh` and `install-tolls.sh` takes care of JDK only - this is not enough.
+It would be nice to support Node/Npm and other tools, but then a single version argument is
+not sufficient.
+Perhaps there should be all-in-one `setenv.sh` without any arguments and smaller `setenv-java.sh`,
+`setenv-node.sh`, etc., for other tools or toolsets.
+E.g. Node/Npm can be managed together, but there is no reason to tie it to Java version.
+That should be set on the project level as needed.
