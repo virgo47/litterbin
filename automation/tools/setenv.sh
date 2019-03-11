@@ -2,11 +2,10 @@
 # Don't run it as a script as it does not set calling environment.
 # It contains required Java version "tag", but this can be changed.
 #
-# JDK is defined in a script sourced from $TOOLS_HOME/defs/JDK_TYPE-def.sh with fallback to
-# $PROJECT_DIR/tools/jdk-def.sh.
-# Definition script must set JDK_URL, JDK_DIR and UNPACK_APP variables.
+# JDK is defined in a script sourced from $TOOLS_HOME/java/defs/JDK_TYPE-def.sh.
+# Definition script must set JDK_URL, JDK_DIR and UNPACK/SUMA_APP variables.
 # UNPACK_APP (containing necessary options) will be run in $JAVA_TOOLS to unpack jdk.tmp file,
-# see $PROJECT_DIR/tools/install-tools.sh for more.
+# see install-tools.sh for more.
 
 # put project JDK version here
 PROJECT_JDK_TYPE=zulujdk-11.0.2
@@ -48,9 +47,9 @@ if [ -n "$JDK_DIR" ]; then
   export JDK_URL
   export JDK_SUM
   export UNPACK_APP
-  export JDK_SUM_APP
+  export CHECKSUM_APP
 
-  bash tools/install-tools.sh ${JDK_TYPE}
+  bash `dirname $BASH_SOURCE`/install-tools.sh ${JDK_TYPE}
 
   # Other project settings necessary for build
   # TODO this probably should go to master setenv, while the rest goes to new setenv-jdk.sh or so

@@ -18,7 +18,7 @@ if [ ! -f "$JAVA_HOME/bin/java" ]; then
 	wget -cqO jdk.tmp $JDK_URL
 
 	if [ -n "${JDK_SUM:-}" ]; then
-		FILE_SUM=`$JDK_SUM_APP jdk.tmp | cut -d' ' -f1`
+		FILE_SUM=`$CHECKSUM_APP jdk.tmp | cut -d' ' -f1`
 		echo $FILE_SUM
 		if [ "$JDK_SUM" != "$FILE_SUM" ]; then
 			echo -e "\nChecksum failed for downloaded JDK\nExpected: $JDK_SUM\nDownload: $FILE_SUM\n"
