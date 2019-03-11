@@ -5,6 +5,8 @@
 # JDK is checked under $TOOLS_HOME/java directory, TOOLS_HOME defaults to $HOME/tools
 # (see setenv.sh for more).
 #
+# CHECKSUM_APP must be set to produce checksum as the first word ofi its output.
+#
 # This script requires basic shell utils plus following programs:
 # wget for JDK download (must be on PATH, e.g. via Chocolatey on Windows)
 # unzip (Windows+Git) or GNU tar (Linux/OSX) for JDK installation (based on UNPACK_APP)
