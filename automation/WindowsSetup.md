@@ -58,6 +58,7 @@ cinst -y vim
 cinst -y tortoisesvn
 cinst -y wget
 cinst -y jq
+cinst -y cloc
 ```
 
 Other tools for virtualization and other experiments:
