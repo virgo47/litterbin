@@ -133,9 +133,14 @@ After that open `TTF` folder, select all, right-click, install fonts.
 * **Lock screen** section, choose a picture and check **Show lock screen background picture on the sign-in screen**.
 * **Colors** section, switch of **Transparency effects**.
 
-### Disable snap assist
+### Disable snap assist, autocorrect...
 
-**Settings** (`Win+I`), **System**, **Multitasking** section, toggle off **When I snap a window...**
+* **Settings** (`Win+I`), **System**, **Multitasking** section, toggle off **When I snap a window...**
+
+* **Settings** (`Win+I`), **Devices**, **Typing** section, toggle off both **Autocorrect/Highlight misspelled...**
+(This should, but does not help with Skype autocorrect, not even in versions that don't have other
+options to turn it off.
+Still better to have it off.)
 
 ### Firefox setup
 
