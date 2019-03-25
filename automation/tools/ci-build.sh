@@ -3,7 +3,7 @@
 # For Jenkins, we need one Build step of type "Execute shell" with command: bash ci-build.sh
 # For GitLab .gitlab-ci.yml from the project root is used.
 #
-# It downloads required Java if missing, see tools/install-tools.sh for details.
+# It downloads required Java if missing, see tools/setenv-java.sh for details.
 # See tools/setenv.sh for details about environment.
 # In general: Hardly enything needs to be set on the build server except for:
 # - $HOME/.gradle/gradle.properties with Nexus access must be set up.

@@ -20,5 +20,5 @@ JDK_URL="${!JDK_URL_VAR}"
 JDK_DIR="${!JDK_DIR_VAR}"
 JDK_SUM="${!JDK_SUM_VAR}"
 
-[ "$_OS" = "darwin" ] && CHECKSUM_APP="md5 -r" || CHECKSUM_APP=md5sum
+[ "$_OS" = "darwin" ] && JDK_SUM_APP="md5 -r" || JDK_SUM_APP=md5sum
 [[ "$JDK_URL" == *.zip ]] && UNPACK_APP=unzip || UNPACK_APP="tar xzvf"

@@ -1,60 +1,25 @@
-# Can be sourced to set up current shell.
+# Can be sourced to set up current shell:
+# . tools/setenv.sh
 # Don't run it as a script as it does not set calling environment.
-# It contains required Java version "tag", but this can be changed.
 #
-# JDK is defined in a script sourced from $TOOLS_HOME/java/defs/JDK_TYPE-def.sh.
-# Definition script must set JDK_URL, JDK_DIR and UNPACK/SUMA_APP variables.
-# UNPACK_APP (containing necessary options) will be run in $JAVA_TOOLS to unpack jdk.tmp file,
-# see install-tools.sh for more.
-
-# put project JDK version here
-PROJECT_JDK_TYPE=zulujdk-11.0.2
-JDK_TYPE=${1:-$PROJECT_JDK_TYPE}
-
-export TOOLS_HOME="${TOOLS_HOME:-$HOME/tools}"
-export JAVA_TOOLS="$TOOLS_HOME/java"
+# It reads required tool versions from project's gradle.properties.
+# With argument -v it runs the tools to print their versions.
 
 type -t cygpath &> /dev/null && TOOLS_HOME=`cygpath "$TOOLS_HOME"`
+export TOOLS_HOME="${TOOLS_HOME:-$HOME/tools}"
+echo "TOOLS_HOME: $TOOLS_HOME"
 
-DEF_FILE="$JAVA_TOOLS/defs/${JDK_TYPE}-def.sh"
+[[ "${1:-}" == "-v" ]] && RUN_TOOL_VERSION="YES"
 
-# You may remove this section after this file is copied into project.
-# It is here to allow various JDK installations without defs in user's $TOOLS_HOME.
-[ -f "$DEF_FILE" ] || DEF_FILE="`dirname $BASH_SOURCE`/java/defs/${JDK_TYPE}-def.sh"
+PROP_FILE=`dirname $BASH_SOURCE`/../gradle.properties
 
-# Convenient fallback to version embedded for the project (not provided here, copy from defs).
-# This is not necessary if you can rely on default defs in $TOOLS_HOME/java/defs.
-LOCAL_DEF_FILE="`dirname $BASH_SOURCE`/jdk-def.sh"
+# cut finds the value, xargs trims potential spaces
+PROJECT_JDK=`grep 'versionJdk' ${PROP_FILE} | cut -d= -f2 | xargs`
+PROJECT_NODE=`grep 'versionNodejs' ${PROP_FILE} | cut -d= -f2 | xargs`
+PROJECT_NPM=`grep 'versionNpm' ${PROP_FILE} | cut -d= -f2 | xargs`
 
-if [ -f "$DEF_FILE" ]; then
-	echo "Using definition file: $DEF_FILE"
-	. "$DEF_FILE"
-elif [ -z "${1:-}" -a -f "$LOCAL_DEF_FILE" ]; then
-	echo "Global $DEF_FILE not found, using local fallback..."
-	. "$LOCAL_DEF_FILE"
-	# you can use install-tools.sh to install other JDK/SDK version, but Gradle build will still
-	# complain, if you use the wrong JDK version
-else
-	echo "Requested JDK version $JDK_TYPE, but no $DEF_FILE found!"
-fi
+. `dirname $BASH_SOURCE`/setenv-java.sh ""
+. `dirname $BASH_SOURCE`/setenv-nodejs.sh ""
 
-if [ -n "$JDK_DIR" ]; then
-  export JAVA_HOME="$JAVA_TOOLS/$JDK_DIR"
-
-  echo "TOOLS_HOME: $TOOLS_HOME"
-  echo "JAVA_HOME: $JAVA_HOME"
-
-  export JDK_URL
-  export JDK_SUM
-  export UNPACK_APP
-  export UNPACK_APP_TAIL_OPTS
-  export AFTER_UNPACK_COMMAND
-  export CHECKSUM_APP
-
-  bash `dirname $BASH_SOURCE`/install-tools.sh ${JDK_TYPE}
-
-  # Other project settings necessary for build
-  # TODO this probably should go to master setenv, while the rest goes to new setenv-jdk.sh or so
-else
-  echo "Nothing installed, JDK not defined properly!"
-fi
+# Other project settings necessary for build
+# ...

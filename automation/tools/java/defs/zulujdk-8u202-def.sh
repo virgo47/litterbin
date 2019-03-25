@@ -26,5 +26,5 @@ JDK_SUM="${!JDK_SUM_VAR}"
 # Currently the checksums are defined with URL/DIR, but they should probably be baked-in
 # project's Git version to enforce that exactly the same Java is used for build.
 
-[ "$_OS" = "darwin" ] && CHECKSUM_APP="md5 -r" || CHECKSUM_APP=md5sum
+[ "$_OS" = "darwin" ] && JDK_SUM_APP="md5 -r" || JDK_SUM_APP=md5sum
 [[ "$JDK_URL" == *.zip ]] && UNPACK_APP=unzip || UNPACK_APP="tar xzvf"
