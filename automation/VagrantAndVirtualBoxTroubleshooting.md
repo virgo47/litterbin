@@ -39,4 +39,9 @@ The final command may look like this:
      `vagrant ssh-config | grep ' HostName ' | cut -d' ' -f4`
     ```
 
-* ...
+* **Manual SSH** into the box, handy when for whatever reason `/vagrant` share does not work.
+Also notice `-P` instead of `-p` for `ssh`.
+	```
+	scp -P 2222 -i .vagrant/machines/default/virtualbox/private_key \
+	  -o StrictHostKeyChecking=no ~/Downloads/whatever vagrant@localhost:
+	```
