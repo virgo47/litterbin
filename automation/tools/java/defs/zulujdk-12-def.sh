@@ -12,7 +12,7 @@ case "${OSTYPE//[0-9.-]*/}" in
 		JDK_URL=https://cdn.azul.com/zulu/bin/zulu12.1.3-ca-jdk12-linux_x64.tar.gz
 		JDK_DIR=zulu12.1.3-ca-jdk12-linux_x64
 		JDK_SUM=ac440ed1afb02ba30c7820df8aaa1b37
-		JDK_SUM_APP=sha256sum
+		JDK_SUM_APP=md5sum
 		UNPACK_APP="tar xzvf"
 		;;
 
