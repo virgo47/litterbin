@@ -16,3 +16,6 @@ build/
 output-virtualbox-iso/
 packer_cache/
 *-virtualbox.box
+
+# vagrant directory
+.vagrant/
