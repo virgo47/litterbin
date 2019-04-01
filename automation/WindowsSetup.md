@@ -88,8 +88,7 @@ pip install --upgrade pip setuptools httpie
 
 The rest:
 ```
-cinst -y Handle
-cinst -y procexp
+cinst -y processhacker
 cinst -y ditto
 cinst -y gpg4win-light
 cinst -y openvpn-community
