@@ -22,6 +22,6 @@ case "${OSTYPE//[0-9.-]*/}" in
 		JDK_SUM=fa07eee08fa0f3de541ee1770de0cdca2ae3876f3bd78c329f27e85c287cd070
 		JDK_SUM_APP="shasum -a 256"
 		UNPACK_APP="tar xzvf"
-		UNPACK_APP_TAIL_OPTS=" -s #jdk-11.0.1.jdk/Contents/Home#jdk-11.0.1# jdk-11.0.1.jdk/Contents/Home"
+		ARCHIVE_UNPACK_APP_TAIL_OPTS="-s #jdk-11.0.1.jdk/Contents/Home#jdk-11.0.1# jdk-11.0.1.jdk/Contents/Home"
 		;;
 esac

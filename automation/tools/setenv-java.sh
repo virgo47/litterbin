@@ -55,7 +55,7 @@ if [[ -f "$DEF_FILE" ]]; then
 					exit 1
 				fi
 			fi
-			${UNPACK_APP} jdk.tmp
+			${UNPACK_APP} jdk.tmp ${ARCHIVE_UNPACK_APP_TAIL_OPTS:-}
 			rm jdk.tmp
 		)
 	fi
