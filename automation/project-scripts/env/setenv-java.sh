@@ -30,7 +30,7 @@ if [[ -z "${1:-}" && ! -f "$DEF_FILE" ]]; then
 fi
 
 if [[ -f "$DEF_FILE" ]]; then
-	echo "Reading JDK definition from $DEF_FILE"
+	echo "Reading definition from $DEF_FILE"
 	# unsetting ARCHIVE_SUM in case definition file does not have it
 	unset ARCHIVE_SUM
 
