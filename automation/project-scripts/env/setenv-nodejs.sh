@@ -23,6 +23,8 @@ if [[ -z "${1:-}" && ! -f "$DEF_FILE" ]]; then
 	DEF_FILE=`dirname $BASH_SOURCE`/nodejs-def.sh
 fi
 
+_OS="${OSTYPE//[0-9.-]*/}"
+
 if [[ -f "$DEF_FILE" ]]; then
 	echo "Reading JDK definition from $DEF_FILE"
 	# unsetting ARCHIVE_SUM in case definition file does not have it
@@ -30,8 +32,12 @@ if [[ -f "$DEF_FILE" ]]; then
 
 	. "$DEF_FILE"
 	export NODE_HOME="${NODE_TOOLS}/${FINAL_DIR}"
-	# On Windows there is no bin directory, on Linux there is
-	if [[ ! -f "$NODE_HOME/node" && ! -d "$NODE_HOME/bin" ]]; then
+
+	# On Windows there is no bin directory, on Linux/Mac there is
+	NODE_BIN=${NODE_HOME}/bin
+	[[ "$_OS" == "msys" ]] && NODE_BIN=${NODE_HOME}
+
+	if [[ ! -f "$NODE_BIN/node" ]]; then
 		(
 			mkdir -p "$NODE_TOOLS"
 			cd "$NODE_TOOLS"
@@ -52,9 +58,6 @@ if [[ -f "$DEF_FILE" ]]; then
 		)
 	fi
 
-	NODE_BIN=${NODE_HOME}
-	[[ -d "$NODE_HOME/bin" ]] && NODE_BIN=${NODE_HOME}/bin
-
 	export NODE="$NODE_BIN/node"
 	echo "NODE_HOME: $NODE_HOME"
 
@@ -71,12 +74,20 @@ export NPM_TOOLS="$TOOLS_HOME/npm"
 
 # determine DEF_FILE for NPM
 export NPM_HOME="${NPM_TOOLS}/npm-v${NPM_VERSION}"
-if [[ ! -f "$NPM_HOME/npm" ]]; then
+NPM_BIN="${NPM_HOME}"/bin
+NPM_CLI="${NPM_HOME}/lib/node_modules/npm/bin/npm-cli.js"
+# On Windows there paths are different
+if [[ "$_OS" == "msys" ]]; then
+	NPM_BIN="${NPM_HOME}"
+	NPM_CLI="${NPM_HOME}/node_modules/npm/bin/npm-cli.js"
+fi
+
+if [[ ! -f "$NPM_BIN/npm" ]]; then
 	echo "Installing required Npm version ${NPM_VERSION}..."
 	( PATH=${NODE_BIN}:$PATH ; ${NODE_BIN}/npm install -g --prefix ${NPM_HOME} npm@${NPM_VERSION} )
 fi
 
-export NPM="$NODE $NPM_HOME/node_modules/npm/bin/npm-cli.js"
+export NPM="$NODE $NPM_CLI"
 echo "NPM_HOME: $NPM_HOME"
 if [[ -n "${RUN_TOOL_VERSION:-}" ]]; then
 	echo "Npm version: `${NPM} -v`"
