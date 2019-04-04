@@ -1,0 +1,13 @@
+Here are the scripts for setting up the environment.
+Setting also downloads required tools (JDK, Node.js, Npm) in appropriate versions.
+
+Central part is `setenv.sh` that should be "sourced" (evaluated in current shell, not executed):
+----
+. env/setenv.sh
+----
+
+Afterwards the environment (shell) is ready, so that `./gradlew`, `node`/`npm`/`ng` and other tools
+work as expected for the project.
+
+[NOTE]
+Eventual current project-local `jdk-def.sh` and `nodejs-def.sh` files are omitted.

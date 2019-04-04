@@ -4,8 +4,8 @@ REM Chocolatey installation
  -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" ^
  && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
-REM I hope this happened already:
-REM cinst -y git
-REM cinst -y unzip part of git
+REM I hope git is installed already, but we can safely try again.
+REM cinst -y unzip (is part of git)
 
+cinst -y git
 cinst -y wget
