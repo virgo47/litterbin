@@ -94,7 +94,8 @@ if [[ -n "${RUN_TOOL_VERSION:-}" ]]; then
 fi
 
 if [[ -d "$NODE_BIN" && -d "$NPM_HOME" ]]; then
-	ADDITIONAL_PATH="$PROJECT_ROOT/app/ui/node_modules/.bin:$NPM_HOME:$NODE_BIN"
+	# TODO: set path to project's node_modules as needed
+	ADDITIONAL_PATH="$PROJECT_ROOT/app/ui/node_modules/.bin:$NPM_BIN:$NODE_BIN"
 	if [[ "$PATH" != *"$ADDITIONAL_PATH"* ]]; then
 		echo "Adding Node/Npm and node_modules/.bin to PATH"
 		PATH=${ADDITIONAL_PATH}:$PATH
