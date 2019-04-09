@@ -68,21 +68,25 @@ cinst -y vagrant
 cinst -y packer
 ```
 
-Greenshot, first [disable PrintScreen key in OneDrive](https://superuser.com/a/1239937): 
+Greenshot, first [disable PrintScreen key in OneDrive](https://superuser.com/a/1239937) (just press
+`PrtSc` and say "No..."): 
 ```
 cinst -y greenshot
 ```
 
-Programming (`ghc` is haskell):
+Programming (`ghc` is haskell), in order of general usefulness (`python3` provides `pip`):
 ```
-cinst -y StrawberryPerl
-cinst -y ruby
-cinst -y ghc
 cinst -y python3
+cinst -y ruby
+cinst -y StrawberryPerl
+cinst -y ghc
 ```
 
-With Python 3 (and PIP) we can install HTTPie *in non-admin shell*:
+With Python 3 (and PIP) we can install HTTPie.
+This can be done in non-admin shell too, but why not to provide it for everyone.
+To avoid the need to reopen the console, we call `refreshenv` first:
 ```
+refreshenv
 pip install --upgrade pip setuptools httpie
 ```
 
