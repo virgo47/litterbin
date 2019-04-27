@@ -31,6 +31,12 @@ existing entity. That would probably also require extension mechanism.
 * var/val
 * strongly typed with type inference
 * Objects with identity vs Values, no primitives needed.
+	* Should objects and values share the same operator?
+	`==` should be "equal value", but should it be overridable for objects?
+	I want to avoid chaos of `==` and `===` of JavaScript, on the other hand some agreed upon
+	method like `equals` for object (defaults to `==`) would be OK.
+	Actually Java isn't bad as it is, except for the lack of value types with support for `==`
+	like for enum values.
 * Numeric types: Offer old-school Int with overflow for low-level stuff, but otherwise prefer
 safer version without overflow. Should it NaN or throw an exception? In Pragmatic Programmer they
 consider NaN not good (fail early), which is probably better (although IEEE754 prescribes how to
