@@ -11,15 +11,17 @@
 # See doc/devel/rozbehanie.adoc for details.
 #
 # Be default runs CI build "clean build ...etc" Gradle tasks with --no-daemon flag,
-# unless other list is# provided as arguments (in that case daemon is used by default).
+# unless other list is provided as arguments (in that case daemon is used by default).
 
 set -eu
 set -o pipefail
 
+cd "$(dirname "$0")"
 # sets PROJECT_ROOT, TOOLS_HOME, ... and exports JAVA_HOME, NODE_HOME, and others
-. `dirname $0`/env/setenv.sh
+. env/setenv.sh
 
+# setenv should not change current working dir, but just to be sure we set it
 cd "$PROJECT_ROOT"
 
-echo "Executing Gradle Wrapper in `pwd`"
-bash gradlew --console=plain --warning-mode all --stacktrace ${*:---no-daemon clean build ...etc}
+echo "Executing Gradle Wrapper in $PWD"
+bash gradlew ${@:---console=plain --warning-mode all --stacktrace --no-daemon clean build ..etc}

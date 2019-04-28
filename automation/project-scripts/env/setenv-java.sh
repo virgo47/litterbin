@@ -1,3 +1,5 @@
+# shellcheck shell=bash disable=SC2034,SC1090,SC2164
+#
 # DON'T RUN THIS.
 # You may source it, if $TOOLS_HOME is set: . setenv-java.sh <jdk-tag>
 # Best to be sourced from master setenv.sh, not on its own.
@@ -12,7 +14,7 @@
 # build will still complain, if you use the wrong JDK version.
 JDK_TYPE=${1:-$PROJECT_JDK}
 
-type -t cygpath &> /dev/null && TOOLS_HOME=`cygpath "$TOOLS_HOME"`
+type -t cygpath &> /dev/null && TOOLS_HOME="$(cygpath "$TOOLS_HOME")"
 export JAVA_TOOLS="$TOOLS_HOME/java"
 
 # determine DEF_FILE
@@ -20,13 +22,13 @@ DEF_FILE="$JAVA_TOOLS/defs/${JDK_TYPE}-def.sh"
 
 # You may remove this section after this file is copied into project.
 # It is here to allow various JDK installations without defs in user's $TOOLS_HOME.
-[ -f "$DEF_FILE" ] || DEF_FILE="`dirname $BASH_SOURCE`/../global-tools/java/defs/${JDK_TYPE}-def.sh"
+[ -f "$DEF_FILE" ] || DEF_FILE="$(dirname "$BASH_SOURCE")/../global-tools/java/defs/${JDK_TYPE}-def.sh"
 
 # Convenient fallback to version embedded for the project (not provided here, copy from defs).
 # This is not necessary if you can rely on default defs in $TOOLS_HOME/java/defs.
 if [[ -z "${1:-}" && ! -f "$DEF_FILE" ]]; then
 	echo "Global $DEF_FILE not found, using local fallback..."
-	DEF_FILE=`dirname $BASH_SOURCE`/jdk-def.sh
+	DEF_FILE="$(dirname "${BASH_SOURCE[0]}")/jdk-def.sh"
 fi
 
 if [[ -f "$DEF_FILE" ]]; then
@@ -47,10 +49,10 @@ if [[ -f "$DEF_FILE" ]]; then
 			cd "$JAVA_TOOLS"
 			echo "Downloading Java to provide: $JAVA_HOME"
 			TMP_ARCHIVE="jdk.tmp"
-			wget -cqO ${TMP_ARCHIVE} ${ARCHIVE_URL}
+			curl -C - -s -L -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
 
 			if [[ -n "${ARCHIVE_SUM:-}" ]]; then
-				FILE_SUM=`${ARCHIVE_SUM_APP} ${TMP_ARCHIVE} | cut -d' ' -f1`
+				FILE_SUM="$("$ARCHIVE_SUM_APP" "$TMP_ARCHIVE" | cut -d' ' -f1)"
 				if [[ "$ARCHIVE_SUM" != "$FILE_SUM" ]]; then
 					echo -e "\nChecksum failed for downloaded archive\nExpected: $ARCHIVE_SUM\nDownload: $FILE_SUM\n"
 					echo "Keeping invalid $JAVA_TOOLS/${TMP_ARCHIVE} for inspection. Remove it before trying again."

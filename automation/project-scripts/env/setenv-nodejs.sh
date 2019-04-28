@@ -1,3 +1,5 @@
+# shellcheck shell=bash disable=SC2034,SC1090,SC2164
+#
 # DON'T RUN THIS.
 # You may source it, if $TOOLS_HOME is set (use "" for project node-version):
 # . setenv-nodejs.sh [node-version|""] [npm-version]
@@ -6,7 +8,7 @@
 NODE_VERSION=${1:-$PROJECT_NODE}
 NPM_VERSION=${2:-$PROJECT_NPM}
 
-type -t cygpath &> /dev/null && TOOLS_HOME=`cygpath "$TOOLS_HOME"`
+type -t cygpath &> /dev/null && TOOLS_HOME="$(cygpath "$TOOLS_HOME")"
 
 # Node.js part
 export NODE_TOOLS="$TOOLS_HOME/nodejs"
@@ -16,11 +18,11 @@ DEF_FILE="$NODE_TOOLS/defs/${NODE_VERSION}-def.sh"
 
 # You may remove this section after this file is copied into project.
 # It is here to allow various Node installations without defs in user's $TOOLS_HOME.
-[ -f "$DEF_FILE" ] || DEF_FILE="`dirname $BASH_SOURCE`/../global-tools/node/defs/${NODE_VERSION}-def.sh"
+[ -f "$DEF_FILE" ] || DEF_FILE="$(dirname "$BASH_SOURCE")/../global-tools/node/defs/${NODE_VERSION}-def.sh"
 
 if [[ -z "${1:-}" && ! -f "$DEF_FILE" ]]; then
 	echo "Global $DEF_FILE not found, using local fallback..."
-	DEF_FILE=`dirname $BASH_SOURCE`/nodejs-def.sh
+	DEF_FILE="$(dirname "${BASH_SOURCE[0]}")/nodejs-def.sh"
 fi
 
 _OS="${OSTYPE//[0-9.-]*/}"
@@ -43,18 +45,18 @@ if [[ -f "$DEF_FILE" ]]; then
 			cd "$NODE_TOOLS"
 			echo "Downloading Node.js to provide version: $NODE_VERSION"
 			TMP_ARCHIVE="nodejs.tmp"
-			wget -cqO ${TMP_ARCHIVE} ${ARCHIVE_URL}
+			curl -C - -s -L -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
 
 			if [[ -n "${ARCHIVE_SUM:-}" ]]; then
-				FILE_SUM=`${ARCHIVE_SUM_APP} ${TMP_ARCHIVE} | cut -d' ' -f1`
+				FILE_SUM="$(${ARCHIVE_SUM_APP} "$TMP_ARCHIVE" | cut -d' ' -f1)"
 				if [[ "$ARCHIVE_SUM" != "$FILE_SUM" ]]; then
 					echo -e "\nChecksum failed for downloaded archive\nExpected: $ARCHIVE_SUM\nDownload: $FILE_SUM\n"
 					echo "Keeping invalid $NODE_TOOLS/${TMP_ARCHIVE} for inspection. Remove it before trying again."
 					exit 1
 				fi
 			fi
-			${UNPACK_APP} ${TMP_ARCHIVE} ${ARCHIVE_UNPACK_APP_TAIL_OPTS:-}
-			rm ${TMP_ARCHIVE}
+			${UNPACK_APP} "$TMP_ARCHIVE" ${ARCHIVE_UNPACK_APP_TAIL_OPTS:-}
+			rm "$TMP_ARCHIVE"
 		)
 	fi
 
@@ -62,7 +64,7 @@ if [[ -f "$DEF_FILE" ]]; then
 	echo "NODE_HOME: $NODE_HOME"
 
 	if [[ -n "${RUN_TOOL_VERSION:-}" ]]; then
-		echo "Node version: `${NODE} -v`"
+		echo "Node version: $("$NODE" -v)"
 	fi
 else
 	echo "ERROR: Requested Node.js version ${NODE_VERSION}, but no ${DEF_FILE} found!"
@@ -90,11 +92,10 @@ fi
 export NPM="$NODE $NPM_CLI"
 echo "NPM_HOME: $NPM_HOME"
 if [[ -n "${RUN_TOOL_VERSION:-}" ]]; then
-	echo "Npm version: `${NPM} -v`"
+	echo "Npm version: $("$NPM" -v)"
 fi
 
 if [[ -d "$NODE_BIN" && -d "$NPM_HOME" ]]; then
-	# TODO: set path to project's node_modules as needed
 	ADDITIONAL_PATH="$PROJECT_ROOT/app/ui/node_modules/.bin:$NPM_BIN:$NODE_BIN"
 	if [[ "$PATH" != *"$ADDITIONAL_PATH"* ]]; then
 		echo "Adding Node/Npm and node_modules/.bin to PATH"

@@ -11,3 +11,5 @@ work as expected for the project.
 
 [NOTE]
 Eventual current project-local `jdk-def.sh` and `nodejs-def.sh` files are omitted.
+
+Check scripts with https://www.shellcheck.net.
