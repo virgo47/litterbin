@@ -162,3 +162,35 @@ select * from item where '1.3.7.8.' like tree_path || '%'
 -- excluding itself
 select * from item where '1.3.7.8.' like tree_path || '%' and id != 8  
 ```
+
+## Checking hierarchy levels and tree path format
+
+```sql
+-- tree_path format - must end with the dot
+select * from item
+where tree_path not like '%.'
+;
+
+-- check of the tree_path of the item and its parent
+select parent.tree_path || i.id || '.', i.TREE_PATH, i.* from item i
+left join item parent on parent.id = ak.parent_id
+where i.tree_path <> parent.tree_path || i.id || '.'
+;
+
+-- check of the level of the item and its parent
+select i.id
+from item i
+left join item parent on parent.id = i.parent_id
+where i.lvl - 1 <> parent.lvl
+;
+
+-- check of the level and number of dots in the tree_path
+select * from item
+where lvl <> (length(translate(tree_path, '.0123456789', '.')) - 1)
+;
+
+-- fix of lvl
+update item
+set lvl=(length(translate(tree_path, '.0123456789', '.')) - 1)
+where lvl <> (length(translate(tree_path, '.0123456789', '.')) - 1)
+```
