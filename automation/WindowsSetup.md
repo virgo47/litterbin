@@ -42,6 +42,7 @@ cinst -y foobar2000
 cinst -y gimp
 cinst -y fsviewer
 cinst -y imagemagick
+cinst -y exiftool
 cinst -y slack
 ```
 Classic Shell set to Aero, small icons.
