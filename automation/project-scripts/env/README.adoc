@@ -13,3 +13,12 @@ work as expected for the project.
 Eventual current project-local `jdk-def.sh` and `nodejs-def.sh` files are omitted.
 
 Check scripts with https://www.shellcheck.net.
+
+== Using setenv-*.sh to install tool
+
+Specific `setenv-*.sh` script can be used also to install the tool into `$TOOLS_HOME`, if the
+definition file for it is prepared beforehand.
+For example:
+----
+. env/setenv-java.sh zulujdk-12.0.1
+----

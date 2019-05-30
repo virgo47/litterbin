@@ -7,7 +7,7 @@
 # It reads required tool versions from project's gradle.properties.
 # With argument -v it runs the tools to print their versions.
 
-PROJECT_JDK=zulujdk-12
+PROJECT_JDK=zulujdk-12.0.1
 PROJECT_NODE=10.15.1
 PROJECT_NPM=6.8.0
 
