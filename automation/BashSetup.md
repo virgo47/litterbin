@@ -20,7 +20,7 @@ function setjava() {
   # Now to fix PATH to new JAVA_HOME (TOOLS_HOME is defined in environment)
   PATH=`echo $PATH |
     sed -e "s%/c/PROGRA~./Java/jdk[^:]*%$JAVA_HOME/bin%gI" \
-      -e "s%/$TOOLS_HOME/java/jdk[^:]*%$JAVA_HOME/bin%gI"`
+      -e "s%$TOOLS_HOME/java/jdk[^:]*%$JAVA_HOME/bin%gI"`
   if ! type -p java &> /dev/null; then
     echo "Adding java to PATH"
     PATH=$JAVA_HOME/bin:$PATH
