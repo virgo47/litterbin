@@ -155,6 +155,7 @@ Most things can be set from `about:config` URL (see parentheses, valid for Firef
 	* Ask to save logins and passwords for websites OFF (`signon.rememberSignons = false`)
 	* Show search suggestions in address bar results OFF (`browser.urlbar.suggest.searches = false`)
 	* Restore previous session (`browser.startup.page = 3`)
+	* Remove Reader view from address bar (`reader.parse-on-load.enabled = false`)
 * More about:config (NTLM/Windows SSO + certificates):
 	* `security.enterprise_roots.enabled = true`
 	* `network.automatic-ntlm-auth.trusted-uris = company.com,hostnames-without-domain`
