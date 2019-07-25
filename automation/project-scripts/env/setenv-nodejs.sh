@@ -45,7 +45,7 @@ if [[ -f "$DEF_FILE" ]]; then
 			cd "$NODE_TOOLS"
 			echo "Downloading Node.js to provide version: $NODE_VERSION"
 			TMP_ARCHIVE="nodejs.tmp"
-			curl -C - -s -L -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
+			curl -fsL -C - -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
 
 			if [[ -n "${ARCHIVE_SUM:-}" ]]; then
 				FILE_SUM="$(${ARCHIVE_SUM_APP} "$TMP_ARCHIVE" | cut -d' ' -f1)"

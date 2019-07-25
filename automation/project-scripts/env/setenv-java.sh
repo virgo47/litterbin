@@ -49,7 +49,7 @@ if [[ -f "$DEF_FILE" ]]; then
 			cd "$JAVA_TOOLS"
 			echo "Downloading Java to provide: $JAVA_HOME"
 			TMP_ARCHIVE="jdk.tmp"
-			curl -C - -s -L -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
+			curl -fsL -C - -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
 
 			if [[ -n "${ARCHIVE_SUM:-}" ]]; then
 				FILE_SUM="$("$ARCHIVE_SUM_APP" "$TMP_ARCHIVE" | cut -d' ' -f1)"
