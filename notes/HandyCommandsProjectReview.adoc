@@ -1,0 +1,22 @@
+= Handy commands
+
+== Overall health
+
+=== List of files with last Git modification date:
+
+```
+git ls-tree -r --name-only HEAD | while read filename; do
+  echo "$(git log --date=iso-local -1 --form at="%at %ai %an" -- "$filename") $filename"
+done > last-changes.log
+```
+
+Then we can sort it:
+
+```
+sort -n last-changes.log | head
+```
+
+[NOTE]
+Using `xargs` seems complicated, we need to use the same argument (`filename` in the example)
+twice which requires `-I` which disables `-n 1` (one argument per command).
+Using `while read` solves this problem.
