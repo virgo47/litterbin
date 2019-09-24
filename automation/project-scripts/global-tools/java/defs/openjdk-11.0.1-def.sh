@@ -1,3 +1,6 @@
+#@IgnoreInspection BashAddShebang
+# shellcheck shell=bash disable=SC2034,SC1090,SC2164
+#
 # msys for Windows+Git, linux for Linux or darwin for OSX
 case "${OSTYPE//[0-9.-]*/}" in
 	msys)

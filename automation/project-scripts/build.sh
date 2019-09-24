@@ -24,4 +24,5 @@ cd "$(dirname "$0")"
 cd "$PROJECT_ROOT"
 
 echo "Executing Gradle Wrapper in $PWD"
+# shellcheck disable=SC2068
 bash gradlew ${@:---console=plain --warning-mode all --stacktrace --no-daemon clean build ..etc}

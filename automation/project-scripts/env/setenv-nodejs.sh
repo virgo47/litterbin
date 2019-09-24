@@ -1,3 +1,4 @@
+#@IgnoreInspection BashAddShebang
 # shellcheck shell=bash disable=SC2034,SC1090,SC2164
 #
 # DON'T RUN THIS.

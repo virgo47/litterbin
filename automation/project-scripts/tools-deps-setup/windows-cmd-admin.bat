@@ -8,4 +8,5 @@ REM I hope git is installed already, but we can safely try again.
 REM cinst -y unzip (is part of git)
 
 cinst -y git
+REM wget is handy, although I switched project-scripts to curl
 cinst -y wget

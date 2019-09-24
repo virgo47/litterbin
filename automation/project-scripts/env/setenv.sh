@@ -1,3 +1,4 @@
+#@IgnoreInspection BashAddShebang
 # shellcheck shell=bash disable=SC2034,SC1090,SC2164
 #
 # Can be sourced to set up current shell (assuming we're in project's root):
