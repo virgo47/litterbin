@@ -44,8 +44,10 @@ cinst -y fsviewer
 cinst -y imagemagick
 cinst -y exiftool
 cinst -y slack
+cinst -y obs-studio
 ```
 Classic Shell set to Aero, small icons.
+OBS Studio is screen capturing software.
 
 Developer's tools mandatory:
 ```
