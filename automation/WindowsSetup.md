@@ -30,7 +30,7 @@ in PowerShell/Boxstarter Shell, in `cmd` you need to strip the end and replace `
 as needed):
 ```
 cinst -y classic-shell
-cinst -y firefox
+cinst -y f
 cinst -y notepad2
 cinst -y notepadreplacer -installarguments "/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
 cinst -y TotalCommander
@@ -158,6 +158,7 @@ Most things can be set from `about:config` URL (see parentheses, valid for Firef
 	* Show search suggestions in address bar results OFF (`browser.urlbar.suggest.searches = false`)
 	* Restore previous session (`browser.startup.page = 3`)
 	* Remove Reader view from address bar (`reader.parse-on-load.enabled = false`)
+	* Disable Firefox automatic start-up (`toolkit.winRegisterApplicationRestart = false`)
 * More about:config (NTLM/Windows SSO + certificates):
 	* `security.enterprise_roots.enabled = true`
 	* `network.automatic-ntlm-auth.trusted-uris = company.com,hostnames-without-domain`
