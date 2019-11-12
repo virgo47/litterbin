@@ -30,10 +30,11 @@ in PowerShell/Boxstarter Shell, in `cmd` you need to strip the end and replace `
 as needed):
 ```
 cinst -y classic-shell
-cinst -y f
+cinst -y firefox
 cinst -y notepad2
 cinst -y notepadreplacer -installarguments "/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
 cinst -y TotalCommander
+cinst -y beyondcompare
 cinst -y rapidee
 cinst -y GoogleChrome
 cinst -y FoxitReader
@@ -48,6 +49,7 @@ cinst -y obs-studio
 ```
 Classic Shell set to Aero, small icons.
 OBS Studio is screen capturing software.
+Beyond Compare nicely integrates to Windows shell (context menus).
 
 Developer's tools mandatory:
 ```
@@ -62,6 +64,7 @@ cinst -y tortoisesvn
 cinst -y wget
 cinst -y jq
 cinst -y cloc
+cinst -y vscodium
 ```
 
 Other tools for virtualization and other experiments:
