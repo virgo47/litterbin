@@ -2,6 +2,8 @@
 
 ## Networking
 
+* On Linux, use `ss` instead of `netstat`, e.g. `ss -l` for listen ports.
+
 * Check programs listening on Windows: `netstat -abno | grep -i listen`
 
 * Windows GUI application for network ports/processes: `tcpview` (available via Chocolatey)
