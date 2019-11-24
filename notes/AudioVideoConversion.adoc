@@ -1,27 +1,27 @@
-## First - the alias!
+== First - the alias!
 
-```
+----
 alias ff='ffmpeg -hide_banner'
-```
+----
 
 FFmpeg can be installed with `cinst -y imagemagick`.
 
-## Fixin videos for Vegas/Movie Studio
+== Fixin videos for Vegas/Movie Studio
 
 Some MP4 videos (e.g. from Moto C Plus) can't be imported directly (different codec),
 but just reconverting them is enough:
 
-```
+----
 ff -i XY.mp4 out.mp4
-```
+----
 
 Vegas can now import it and the file also gets considerably shorter without visible loss of quality.
 At least for that phone (results probably may vary).
 
-## Audio conversion
+== Audio conversion
 
 To OGG Q7 (`anything-to-ogg-44k1-q7.sh`):
-```
+----
 #!/bin/sh
 
 # ffmpeg installed as part of imagemagick or imagemagick.app (using chocolatey)
@@ -33,12 +33,12 @@ To OGG Q7 (`anything-to-ogg-44k1-q7.sh`):
 # -vn is no video (just in case of some cover image in flac file)
 # -y to overwrite file
 ffmpeg.exe -i "${1}" -ar 44100 -vn -codec:a libvorbis -qscale:a 7 -y "${1%.*}.ogg"
-```
+----
 
 To MP3 for players that don't support OGG or FLAC.
 This one is more sophisticated, it doesn't override original files and allows directory as the
 last argument (`anything-to-mp3.sh`):
-```
+----
 #!/bin/sh
 # takes list of files to convert, can be ogg or any other format
 # last param can be output dir (created if necessary, defaults to basedir of input file)
@@ -90,5 +90,4 @@ while [ -n "$1" ]; do
   
   shift
 done
-```
-
+----
