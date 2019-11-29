@@ -67,7 +67,7 @@ cinst -y putty
 cinst -y winscp
 cinst -y 7zip.commandline
 cinst -y unzip
-cinst -y vim
+REM cinst -y vim # don't need gvim and vim comes with git
 cinst -y tortoisesvn
 cinst -y wget
 cinst -y jq
