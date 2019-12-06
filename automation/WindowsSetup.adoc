@@ -35,13 +35,18 @@ To upgrade all installed tools later we just use `cup -y all` (`all` is a specia
 
 We can install and download virtually any other favourite tool:
 
+[NOTE]
+Sometims `cinst` doesn't work as expected, e.g. it reports dependency resolution problems, etc.
+It's better to wait couple of hours (or days if possible), to let this problem go away, it's often
+nonessential and transitory (yet annoying).
+
 ----
 cinst -y classic-shell
 cinst -y firefox
 cinst -y notepad2
 cinst -y notepadreplacer -installarguments "/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
 cinst -y TotalCommander
-cinst -y beyondcompare
+cinst -y winmerge
 cinst -y rapidee
 cinst -y GoogleChrome
 cinst -y FoxitReader
