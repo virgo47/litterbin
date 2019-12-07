@@ -10,14 +10,15 @@ Start with Chocolatey package system - in *administrative* cmd:
 
 All the following commands are with `cmd` syntax (e.g. `"` instead of `'`).
 By default Chocolatey downloads into TEMP directory, which results in repeated downloads, when
-you experiment a lot with the same package. You may point it to a specific directory like this:
+you experiment a lot with the same package.
+You may point it to a specific directory like this:
 
 ----
 choco config set cacheLocation "c:\ProgramData\Chocolatey\tmp-cache"
 ----
-Also https://github.com/chocolatey/choco/wiki/How-To-Change-Cache[see here]. As a result
-you have to take care of the directory and maybe clean it up sometimes. You can also pack this
-cache directory and move it elsewhere to do offline installation.
+Also https://github.com/chocolatey/choco/wiki/How-To-Change-Cache[see here].
+As a result you have to take care of the directory and maybe clean it up sometimes.
+You can also pack this cache directory and move it elsewhere to do offline installation.
 (!) TODO: check how this works, because http://stackoverflow.com/questions/18528919/how-to-install-chocolatey-packages-offline[there is more to it].
 
 To allow packages without checksums (avoiding prompt every time):
@@ -117,7 +118,6 @@ The rest:
 
 ----
 cinst -y processhacker
-cinst -y ditto
 cinst -y gpg4win-light
 cinst -y openvpn-community
 cinst -y licecap
@@ -198,7 +198,8 @@ What I typically change:
 ** *Choose your startup task...* select - for me it's *Git bash*.
 * In *Keys & Macro*:
 ** Global hotkey for *Minimize/Restore* `` Ctrl+` `` collides with IDEA, change to `<None>`
-(using `Win+2` anyway).
+(choose nothing from the first select after *Choose hotkey* input).
+I'll use `Win+number` for ConEmu anyway.
 ** Switch to previous/next console change to `Alt+Left/Right`
 ** Open new console popup is `Win+N` (good)
 ** Scroll buffer one page up/down - change to `Shift+PgUp/Dn` (`Ctrl` by default)
@@ -235,11 +236,7 @@ SETX /M JAVA_HOME "c:\Program Files\Java\jdk1.8.0_92"
 
 TODO: Is it possible ot use other variable in PATH? How to display unexpanded variable string?
 
-=== Problem: Windows 10 and sticky corners on dual monitor
-
-Could have been solved in Windows 8.1 with registry trick, not anymore. Microsoft screwed big time.
-
-=== Problem: Blurry fonts on dual monitor
+=== Problem: Blurry fonts on dual monitor or in some applications
 
 Set both monitors to the same size of font (typically it is 125% on the notebook and 100% on
 external monitor, 125% is rather too much for the monitor, so 100% is better for both).
