@@ -1,6 +1,12 @@
 #@IgnoreInspection BashAddShebang
 # shellcheck shell=bash disable=SC2034,SC1090,SC2164
 #
+# See setenv-java.sh for the details how this is used.
+# We use Zulu JDK from: https://www.azul.com/downloads/zulu-community
+# For each platform you choose proper format (plain archive, not installer),
+# copy the download link, change the final dir (for Zulu it's archive name without extension),
+# change expected checksum (and check its format) and you're done.
+#
 # msys for Windows+Git, linux for Linux or darwin for OSX
 case "${OSTYPE//[0-9.-]*/}" in
 	msys)

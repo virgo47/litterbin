@@ -2,7 +2,7 @@
 # shellcheck shell=bash disable=SC2034,SC1090,SC2164
 #
 # Can be sourced to set up current shell (assuming we're in project's root):
-# . env/setenv.sh
+# . cicd/setenv.sh
 # Don't run it as a script as it does not set calling environment.
 #
 # It reads required tool versions from project's gradle.properties.
@@ -22,8 +22,8 @@ echo "TOOLS_HOME: $TOOLS_HOME"
 
 [[ "${1:-}" == "-v" ]] && RUN_TOOL_VERSION="YES"
 
-. "$PROJECT_ROOT"/env/setenv-java.sh ""
-. "$PROJECT_ROOT"/env/setenv-nodejs.sh ""
+. "$PROJECT_ROOT"/cicd/setenv-java.sh ""
+. "$PROJECT_ROOT"/cicd/setenv-nodejs.sh ""
 
 # Other project settings necessary for build
 # ...

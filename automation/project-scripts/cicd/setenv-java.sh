@@ -1,18 +1,19 @@
 #@IgnoreInspection BashAddShebang
 # shellcheck shell=bash disable=SC2034,SC1090,SC2164
 #
-# DON'T RUN THIS.
+# DON'T RUN THIS, source it!
 # You may source it, if $TOOLS_HOME is set: . setenv-java.sh <jdk-tag>
 # Best to be sourced from master setenv.sh, not on its own.
-
+#
 # JDK is defined in a script sourced from $TOOLS_HOME/java/defs/JDK_TYPE-def.sh
-# with fallback to $PROJECT_ROOT/env/jdk-def.sh.
+# with fallback to $PROJECT_ROOT/cicd/jdk-def.sh.
 # Definition script must set ARCHIVE_URL, FINAL_DIR and UNPACK_APP variables.
 # UNPACK_APP (containing necessary options) will be run in $JAVA_TOOLS
 # to unpack jdk.tmp file.
-
-# You can use setenv-java.sh to set/install other JDK/SDK version, but Gradle
-# build will still complain, if you use the wrong JDK version.
+#
+# You can use setenv-java.sh to set/install other JDK/SDK version, but demonstrated
+# Gradle build will still complain, if you use the wrong JDK version.
+#
 JDK_TYPE=${1:-$PROJECT_JDK}
 
 type -t cygpath &> /dev/null && TOOLS_HOME="$(cygpath "$TOOLS_HOME")"
@@ -65,8 +66,16 @@ if [[ -f "$DEF_FILE" ]]; then
 		)
 	fi
 
+	if [[ -d "$JAVA_HOME" ]]; then
+		ADDITIONAL_PATH="$JAVA_HOME/bin"
+		if [[ "$PATH" != *"$ADDITIONAL_PATH"* ]]; then
+			echo "Adding JAVA_HOME/bin to PATH"
+			PATH=${ADDITIONAL_PATH}:$PATH
+		fi
+	fi
+
 	if [[ -n "${RUN_TOOL_VERSION:-}" ]]; then
-		"$JAVA_HOME/bin/java" -version
+		java -version
 	fi
 else
 	echo "ERROR: Requested JDK version $JDK_TYPE, but no $DEF_FILE found!"

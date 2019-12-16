@@ -1,25 +1,25 @@
-= Skripts
+= Scripts
 
 Various scripts to get me up and running with development:
 
-* `build.sh` goes to the project root and is main script for GitLab (or other) CI/CD;
-* `env` directory can be moved as-is.
-
-Scripts in `tools-deps-setup` are to make the machine ready to run my CI/setenv scripts.
-It can be CI server or developer's machine, etc.
+* `build.sh` goes to the project root and is main script for GitLab (or other) CI/CD.
+* `cicd` directory can be moved as-is.
+* `global-tools` directory can be used as a seed for a directory referenced
+by environment variable `TOOLS_HOME`.
+It's highly recommended to set this explicitly, otherwise it defaults to `$HOME/tools`.
 
 == Java installation
 
 Script `setenv.sh` should be sourced (run in the current shell) to set the environment:
 ----
-. env/setenv.sh
+. cicd/setenv.sh
 ----
 
-It sets JDK, that is `JAVA_HOME` variable (`PATH` is not changed as Gradle/Maven doesn't care).
+It sets JDK, that is `JAVA_HOME` variable and prepends `PATH` with the new `JAVA_HOME/bin`.
 
 It can be called with other JDK version like:
 ----
-. env/setenv.sh zulujdk-8u202
+. cicd/setenv.sh zulujdk-8u202
 ----
 
 This installs JDK based on definition file `$TOOLS_HOME/java/defs/$1-def.sh`,
@@ -28,8 +28,6 @@ These definition files can be managed globally, like in `global-tools/java/defs`
 The point is to allow reliable download and unzip/install of a precise tool version anytime.
 Download URL can change (and will be redefined), but checksum should be the same (although
 archive format can technically change, but it's unlikely).
-Environment variable `TOOLS_HOME` can be set in user's environment, otherwise it falls back
-to `$HOME/tools`.
 
 == Definition files
 
@@ -77,7 +75,7 @@ if (requiredJdkVersion) {
 			"Required JDK version: $requiredJdkVersion\n" +
 			"- To ignore this remove 'requiredJdkVersion' property, e.g. use CLI option '-PrequiredJdkVersion'.\n" +
 			"- If run from interactive shell, perhaps set environment with: . env/setenv.sh\n" +
-			"  . env/setenv.sh also installs the missing tools.\n" +
+			"  . cicd/setenv.sh also installs the missing tools.\n" +
 			"- If run from IDE, set projects JDK to required version.")
 	}
 } else {
