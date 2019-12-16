@@ -46,24 +46,9 @@ if [[ -f "$DEF_FILE" ]]; then
 
 	# installing Java if missing
 	if [[ ! -f "$JAVA_HOME/bin/java" ]]; then
-		(
-			mkdir -p "$JAVA_TOOLS"
-			cd "$JAVA_TOOLS"
-			echo "Downloading Java to provide: $JAVA_HOME"
-			TMP_ARCHIVE="jdk.tmp"
-			curl -fsL -C - -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
-
-			if [[ -n "${ARCHIVE_SUM:-}" ]]; then
-				FILE_SUM="$("$ARCHIVE_SUM_APP" "$TMP_ARCHIVE" | cut -d' ' -f1)"
-				if [[ "$ARCHIVE_SUM" != "$FILE_SUM" ]]; then
-					echo -e "\nChecksum failed for downloaded archive\nExpected: $ARCHIVE_SUM\nDownload: $FILE_SUM\n"
-					echo "Keeping invalid $JAVA_TOOLS/${TMP_ARCHIVE} for inspection. Remove it before trying again."
-					exit 1
-				fi
-			fi
-			${UNPACK_APP} ${TMP_ARCHIVE} ${ARCHIVE_UNPACK_APP_TAIL_OPTS:-}
-			rm ${TMP_ARCHIVE}
-		)
+		echo "Downloading Java to provide: $JAVA_HOME"
+		TOOL_BASE_DIR="$JAVA_TOOLS"
+		. "$(dirname "${BASH_SOURCE[0]}")/tool-download.sh"
 	fi
 
 	if [[ -d "$JAVA_HOME" ]]; then

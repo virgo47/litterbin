@@ -1,7 +1,7 @@
 #@IgnoreInspection BashAddShebang
 # shellcheck shell=bash disable=SC2034,SC1090,SC2164
 #
-# See setenv-java.sh for the details how this is used.
+# See setenv-java.sh and tool-download.sh for the details how this is used.
 # We use Zulu JDK from: https://www.azul.com/downloads/zulu-community
 # For each platform you choose proper format (plain archive, not installer),
 # copy the download link, change the final dir (for Zulu it's archive name without extension),

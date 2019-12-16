@@ -41,24 +41,9 @@ if [[ -f "$DEF_FILE" ]]; then
 	[[ "$_OS" == "msys" ]] && NODE_BIN=${NODE_HOME}
 
 	if [[ ! -f "$NODE_BIN/node" ]]; then
-		(
-			mkdir -p "$NODE_TOOLS"
-			cd "$NODE_TOOLS"
-			echo "Downloading Node.js to provide version: $NODE_VERSION"
-			TMP_ARCHIVE="nodejs.tmp"
-			curl -fsL -C - -o "$TMP_ARCHIVE" "$ARCHIVE_URL"
-
-			if [[ -n "${ARCHIVE_SUM:-}" ]]; then
-				FILE_SUM="$(${ARCHIVE_SUM_APP} "$TMP_ARCHIVE" | cut -d' ' -f1)"
-				if [[ "$ARCHIVE_SUM" != "$FILE_SUM" ]]; then
-					echo -e "\nChecksum failed for downloaded archive\nExpected: $ARCHIVE_SUM\nDownload: $FILE_SUM\n"
-					echo "Keeping invalid $NODE_TOOLS/${TMP_ARCHIVE} for inspection. Remove it before trying again."
-					exit 1
-				fi
-			fi
-			${UNPACK_APP} "$TMP_ARCHIVE" ${ARCHIVE_UNPACK_APP_TAIL_OPTS:-}
-			rm "$TMP_ARCHIVE"
-		)
+		echo "Downloading Node.js to provide version: $NODE_VERSION"
+		TOOL_BASE_DIR="$NODE_TOOLS"
+		. "$(dirname "${BASH_SOURCE[0]}")/tool-download.sh"
 	fi
 
 	export NODE="$NODE_BIN/node"
