@@ -226,6 +226,22 @@ all the new consoles open there and the old ones can be closed at our leisure.
 
 == Various Windows tips/problems
 
+=== Windows Defender folder exclusions
+
+For I/O heavy folders (programming, video, photo) it's possible to turn off Windows Defender.
+
+* *Settings* (`Win+I`), *Update & Security*, *Windows Security* (opens new window),
+*Virus & threat protection* on the left, link *Manage settings* in the right section,
+then scroll down to *Exclusions*, link *Add or remove exclusions* and add directories like:
+** `~/.IntelliJIdea2019.3/system` (Idea asks about it and fixes it anyway)
+** `~/.m2` because of massive library caches
+** `~/.gradle` dtto
+** `/c/work/workspace` programming projects
+** `/c/work/video-projects` etc.
+
+In theory the whole `/c/work` could be added, but with binaries under `/c/work/tools` it's perhaps
+not a good idea.
+
 === Setting PATH and other environment variables permanently
 
 SETX is the command that should handle it, `/M` tells it to use system environment, not local one.
