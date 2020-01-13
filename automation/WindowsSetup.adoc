@@ -59,10 +59,11 @@ cinst -y imagemagick
 cinst -y exiftool
 cinst -y slack
 cinst -y obs-studio
+cinst -y cpu-z
+cinst -y hwmonitor
 ----
 Classic Shell set to Aero, small icons.
 OBS Studio is screen capturing software.
-Beyond Compare nicely integrates to Windows shell (context menus).
 
 Developer's tools mandatory:
 
@@ -159,7 +160,7 @@ After that open `TTF` folder, select all, right-click, install fonts.
 * Right-click on the desktop , Personalize
 * *Background* section, *Background* select to *Slideshow* and choose the directory with my wallpapers (perhaps directly from OneDrive?)
 * *Lock screen* section, choose a picture and check *Show lock screen background picture on the sign-in screen*.
-* *Colors* section, switch of *Transparency effects*.
+* *Colors* section, switch off *Transparency effects*.
 
 === Disable snap assist, autocorrect...
 
