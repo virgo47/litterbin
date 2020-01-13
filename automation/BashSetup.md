@@ -16,11 +16,13 @@ function setjava() {
   fi
 
   echo "Using $JAVA_HOME_VAR with value $JAVA_HOME_VAL"
-  JAVA_HOME=`cygpath $JAVA_HOME_VAL`
+  JAVA_HOME="$(cygpath $JAVA_HOME_VAL)"
+  TOOLS_HOME="$(cygpath $TOOLS_HOME)"
   # Now to fix PATH to new JAVA_HOME (TOOLS_HOME is defined in environment)
-  PATH=`echo $PATH |
-    sed -e "s%/c/PROGRA~./Java/jdk[^:]*%$JAVA_HOME/bin%gI" \
-      -e "s%$TOOLS_HOME/java/jdk[^:]*%$JAVA_HOME/bin%gI"`
+  PATH="$(echo $PATH |                                    
+    sed \                                                 
+      -e "s%/c/PROGRA~./Java/jdk[^:]*%$JAVA_HOME/bin%gI" \
+      -e "s%$TOOLS_HOME/java/[^:]*%$JAVA_HOME/bin%gI")"   
   if ! type -p java &> /dev/null; then
     echo "Adding java to PATH"
     PATH=$JAVA_HOME/bin:$PATH
