@@ -14,7 +14,7 @@ Eventual current project-local `jdk-def.sh` and `nodejs-def.sh` files are omitte
 
 Check scripts with https://www.shellcheck.net.
 
-== Using setenv-*.sh to install tool
+== Using `setenv-*.sh` to install tool
 
 Specific `setenv-*.sh` script can be used also to install the tool into `$TOOLS_HOME`, if the
 definition file for it is prepared beforehand.
@@ -22,3 +22,17 @@ For example:
 ----
 . cicd/setenv-java.sh zulujdk-12.0.1
 ----
+
+== Using `tool-download.sh` to install tool
+
+Let's say we want to download EA version of Java and don't want any checksum (here for Windows):
+----
+TOOL_BASE_DIR="$TOOLS_HOME/java"
+ARCHIVE_URL=https://cdn.azul.com/zulu/bin/zulu14.0.33-ea-jdk14.0.0-ea.32-win_x64.zip
+UNPACK_APP=unzip
+unset ARCHIVE_SUM # just in case, it could be set from previous installation
+. cicd/tool-download.sh
+----
+
+Script `tool-download.sh` is sourced, so we don't have to export any variables.
+This does not set any JAVA_HOME, it only downloads and unpacks the tool into `TOOL_HOME/java`.
