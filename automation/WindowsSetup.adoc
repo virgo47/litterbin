@@ -115,7 +115,11 @@ refreshenv
 pip install --upgrade pip setuptools httpie
 ----
 
-The rest:
+If there are problems with Windows permissions, we may do it just for the user adding `--user`
+switch, but then we need to add local scripts to `PATH`.
+These are typically in `%APPDATA%\Python\Python38\Scripts` or similar.
+
+The rest (back in admin `cmd`):
 
 ----
 cinst -y processhacker
