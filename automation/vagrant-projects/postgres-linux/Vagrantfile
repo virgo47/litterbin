@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-19.10"
+
+  config.vm.box_check_update = false
+
+  # multiple entries can be added, but we don't need web, and we need 8080 free on host
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # PostgreSQL
+  config.vm.network "forwarded_port", guest: 5432, host: 5432
+
+  config.vm.provider "virtualbox" do |vb|
+  #   vb.gui = true
+    vb.name = "postgres-linux"
+    vb.memory = "1024"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get install -y postgresql postgresql-contrib
+    sudo -i -u postgres psql -c "SELECT version();"
+
+    # allow connections from outside (not just from localhost)
+    sudo ed /etc/postgresql/*/main/postgresql.conf << EOF
+/^#listen_addresses
+i
+# Listen on all interfaces to allow connections from outside
+listen_addresses = '*'
+.
+wq
+EOF
+    sudo cat >> /etc/postgresql/*/main/pg_hba.conf << EOF
+# Allow connections from outside (with password)
+host    all             all             0.0.0.0/0            md5
+
+EOF
+    sudo service postgresql restart
+
+    # If we want to init DB, e.g. for midpoint: https://wiki.evolveum.com/display/midPoint/PostgreSQL
+    # sudo -i -u postgres psql -c "CREATE USER midpoint WITH PASSWORD 'password' LOGIN SUPERUSER;"
+    # sudo -i -u postgres psql -c "CREATE DATABASE midpoint WITH OWNER = midpoint ENCODING = 'UTF8' TABLESPACE = pg_default LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8' CONNECTION LIMIT = -1;"
+    # Afterwards we can use psql (at least on PG 11.7 there is entry for host/all/md5):
+    # psql -U midpoint -p 5432 -h localhost
+    # We still need to create objects, we don't do that here.
+  SHELL
+end
