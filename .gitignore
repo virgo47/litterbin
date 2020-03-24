@@ -19,3 +19,5 @@ packer_cache/
 
 # vagrant directory
 .vagrant/
+# ignored directory for shared files with Vagrant box
+local-data/
