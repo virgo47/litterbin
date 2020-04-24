@@ -56,3 +56,17 @@ GET 'http://some.url:port/api/v1/resource'
 
 To format JSON we can use https://stedolan.github.io/jq/[jq], which can be downloaded also as
 a static binary.
+
+== less
+
+Normally `less` clears the screen after it's quit, which may be annoying if we want to see the content.
+To prevent it, we can use `less -X`.
+To make this default we can set `LESS` environment variable, e.g. in link:bash-startup-files/.bashrc[`~/.bashrc`].
+To make it work even in programs that use `less` as a default pager, we can set `PAGER` variable.
+
+Both can be seen here:
+
+[source,bash]
+----
+include::bash-startup-files/.bashrc[tag=variables]
+----

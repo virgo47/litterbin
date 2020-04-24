@@ -1,0 +1,64 @@
+= Setup of new bash
+
+== Switching Java versions
+
+Switching between Java versions (`JAVA_HOME` and `PATH`) with `setjava XY` macros in
+link:bash-startup-files/.profile[`~/.profile`]:
+
+[source,bash]
+----
+include::bash-startup-files/.profile[tag=setjava]
+----
+
+This requires that **all those variables have short path (or at least no spaces)** which can be
+checked by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly. This also
+uses `cygpath`, but that one is available as part of git bash environment.
+
+== Aliases
+
+I put these in my link:bash-startup-files/.bashrc[`~/.bashrc`]:
+
+[source,bash]
+----
+include::bash-startup-files/.bashrc[tag=aliases]
+----
+
+I also set handy variables here:
+
+[source,bash]
+----
+include::bash-startup-files/.bashrc[tag=variables]
+----
+
+
+== Git
+
+Configuration of Git can be found in `~/.gitconfig`:
+
+[source]
+----
+[user]
+	name = virgo47
+	email = virgo47@gmail.com
+[core]
+	autocrlf = true
+[http]
+[log]
+	date = format:%Y-%m-%d %H:%M
+[alias]
+	ll = log --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+	lg = log --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+	lu = log @{u}.. --graph --format='%C(yellow)%h%Creset %C(magenta)%ad %C(bold cyan)(%an)%Creset %s%C(auto)%d'
+	st = status -sb
+[pull]
+	rebase = true
+----
+
+Global name/email settings can be corporate values for the corporate computer, which means that in
+each GitHub or other private repo I have to run:
+
+[source]
+----
+git config user.name virgo47
+git config user.email virgo47@gmail.com
+----
