@@ -60,7 +60,8 @@ a static binary.
 == less
 
 Normally `less` clears the screen after it's quit, which may be annoying if we want to see the content.
-To prevent it, we can use `less -X`.
+To prevent it, we can use `less -XR`.
+Option `-X` alone fixes clearing the screen, but leads to wrong output of color codes which `-R` fixes.
 To make this default we can set `LESS` environment variable, e.g. in link:bash-startup-files/.bashrc[`~/.bashrc`].
 To make it work even in programs that use `less` as a default pager, we can set `PAGER` variable.
 

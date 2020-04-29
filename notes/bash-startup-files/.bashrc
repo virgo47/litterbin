@@ -44,8 +44,8 @@ alias
 # longer bash history
 HISTSIZE=2000
 
-# to leave content of the terminal after quitting less
-export LESS='-X'
+# to leave content of the terminal after quitting less + keep colors too
+export LESS='-XR'
 # used as default paging command, e.g. in psql
-export PAGER='less -X'
+export PAGER='less -XR'
 # end::variables[]
