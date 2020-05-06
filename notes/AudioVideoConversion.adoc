@@ -46,7 +46,7 @@ last argument (`anything-to-mp3.sh`):
 # ffmpeg installed as part of imagemagick or imagemagick.app (using chocolatey)
 # this version also supports better libvorbis, unlike binary from ffmpeg web
 #
-# Usage with find: find . -name \*.flac -exec ./anything-to-ogg-44k1-q7.sh {} \;
+# Usage with find: find . -name \*.flac -exec ./anything-to-mp3.sh {} \;
 # filename must by in additional {} for protection of spaces
 # -vn is no video (just in case of some cover image in flac file)
 # -y to overwrite the output file (input file is not changed of course)
@@ -66,7 +66,7 @@ if [ -d "$last" -o ! -f "$last" ]; then
   OUTDIR="$last"
   mkdir -p "$OUTDIR"
   echo "Output to: $OUTDIR"
-  
+
   # Setting new arg list without the last arg (only files to convert are there now)
   set -- "${@:1:$(($#-1))}"
 fi
@@ -74,7 +74,7 @@ fi
 while [ -n "$1" ]; do
   # if we get to the last param that is used as output dir, we can exit (not necessary after set above)
   #[ "$OUTDIR" = "$1" ] && exit
-  
+
   OUT="${1%.*}.mp3"
   if [ -n "$OUTDIR" ]; then
     OUT="$OUTDIR/"`basename "$OUT"`
@@ -87,7 +87,7 @@ while [ -n "$1" ]; do
   # quality 4~165kbps, 5~130 (lower is better): https://trac.ffmpeg.org/wiki/Encode/MP3
   # ffmpeg has its own quoting system, doesn't work well with single-quotes, so we redirect
   ffmpeg.exe -i pipe: -ar 44100 -vn -codec:a libmp3lame -qscale:a 4 -y "${OUT}" < "$1"
-  
+
   shift
 done
 ----
