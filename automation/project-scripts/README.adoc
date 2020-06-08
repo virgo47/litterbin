@@ -54,11 +54,11 @@ ARCHIVE_SUM_APP="md5 -r"
 
 == What about other tools?
 
-Currently `setenv.sh` and `install-tolls.sh` takes care of JDK only - this is not enough.
+Currently, `setenv.sh` and `install-tolls.sh` takes care of JDK only - this is not enough.
 It would be nice to support Node/Npm and other tools, but then a single version argument is
 not sufficient.
-Perhaps there should be all-in-one `setenv.sh` without any arguments and smaller `setenv-java.sh`,
-`setenv-node.sh`, etc., for other tools or toolsets.
+Perhaps there should be all-in-one `setenv.sh` without any arguments and smaller
+`setenv-java.sh`, `setenv-node.sh`, etc., for other tools or toolsets.
 E.g. Node/Npm can be managed together, but there is no reason to tie it to Java version.
 That should be set on the project level as needed.
 
@@ -82,3 +82,5 @@ if (requiredJdkVersion) {
 	logger.warn "WARNING: JDK version not enforced! Use 'requiredJdkVersion' if required."
 }
 ----
+
+Use only fixed version definition files for this - never the `latest` ones.
