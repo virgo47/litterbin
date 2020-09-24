@@ -36,6 +36,9 @@ alias gri="grep -ri"
 # gradle-wrapper-wrapper with plain console output (useful for redirecting)
 alias gwp="gw --console plain"
 
+# ffmpeg without the banner
+alias ff='ffmpeg -hide_banner'
+
 echo "Aliases set up:"
 alias
 # end::aliases[]

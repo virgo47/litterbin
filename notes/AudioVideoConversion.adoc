@@ -6,7 +6,7 @@ alias ff='ffmpeg -hide_banner'
 
 FFmpeg can be installed with `cinst -y imagemagick`.
 
-== Fixin videos for Vegas/Movie Studio
+== Fixing videos for Vegas/Movie Studio
 
 Some MP4 videos (e.g. from Moto C Plus) can't be imported directly (different codec),
 but just reconverting them is enough:

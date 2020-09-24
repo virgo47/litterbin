@@ -1,0 +1,28 @@
+= OBS Studio Recording
+
+== Video setup
+
+Section: *Setting | Output | Recording*
+
+Recording format: *mkv* - while not easily digested, it's safe when recording crashes.
+It is easy to copy streams to MP4 or other containers later using `ffmpeg`.
+
+Audio Track: select first three.
+
+We will use first for the mixed audio, second for the desktop audio only and third for the microphone.
+
+Encoder: *x264* - this one supports rate control via *CRF* which we want to use.
+No rescaling needed - we mostly go for 1080p video.
+
+Rate control *CRF* set to *21* and CPU Usage Preset *veryfast*.
+This seems to work well enough, the final video can have wide range of bitrates, e.g. UT2004 was around 15Mbps,
+but slower game or recording application tutorials can have much lower bitrates.
+With lower CRF values (higher quality) and slower CPU presets the video could have jitter,
+but this may also depend on background processes.
+
+TODO:
+priority above normal
+
+== Audio setup
+
+TODO
