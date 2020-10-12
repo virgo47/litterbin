@@ -1,0 +1,29 @@
+= REAPER notes
+
+== Procedures
+
+* Time selection for item: `Shift+double-click`
+* Create region for time selection: `Shift+R`
+* Edit region: `Shift+double-click`
+* Render: `Ctrl+Alt+R`
+** File name example: `snp10-$regionnumber-$region`
+
+=== Envelopes
+
+* 4-point envelope edit of selection: `Ctrl+Shift+drag`
+* Envelope points:
+** `Alt+click` delete
+** `Ctrl+click/drag` freehand draw
+** `Shift+drag` move without snap
+** `Ctrl+Shift+drag` move in one axis only
+
+== Good sounds
+
+=== Long, effects
+
+* Ethereal Earth - Frost Drone
+* Giant
+** Giant Noises; The Giant Cinematic the same, but drier; Tunnel Light more distant; Vortex with echo)
+** Kataklysm, Orchestral Sphere, Overtone Reverse
+** Phosphorescence (long, squeaking, going down later)
+* Kinetic Metal (Alloy Cyclone, )
