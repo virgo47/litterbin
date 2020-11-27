@@ -1,0 +1,11 @@
+= DaVinci Resolve Notes
+
+Video aspect ratio: 16:9
+Photos aspect ratio: 3:2
+
+If photo fits (matching height) with Transform Zoom = 1, then to fill the screen (matching width) the zoom must be:
+(16/3)/(9/2) = 1.185185... or 1.1852 or 1.186 or 1.19 for full coverage.
+
+== TODO
+
+How to hover above a map with rotation in place after translate?

@@ -1,0 +1,31 @@
+= Photo management
+
+Couple of tools are used for photo management:
+
+* *FastStone Image Viewer* - for viewing and importing images from the camera (replacing Canon's native offering).
+FastStone also offers couple of basic editing tools (scale, crop, rotation)
+* *XnView MP* - an alternative viewer with stronger management capabilities.
+It can edit XMP/IPTC metadata and keywords and use them for searches.
+* *Canon Digital Photo Professional* - raw file editor.
+* *exiftool* - command line tool for viewing and manipulating metadata.
+It can be used to add IPTC keywords to multiple files.
+
+Services:
+
+* Google Photos (previously Picasa):
+** supports captions in IPTC/XMP caption/subject (plays well with `Ctrl+I` from XnView MP),
+** problems with ordering by date taken (edits mess with this),
+** supports intertitles in albums.
+* Amazon Photos:
+** nice UI, can order by date/time taken,
+** no caption support yet.
+
+== Downloading photos
+
+FastStone Image Viewer
+
+TODO: settings
+
+== Managing keywords
+
+XnViewMP, `Ctrl+I`
