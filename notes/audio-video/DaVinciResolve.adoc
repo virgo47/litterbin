@@ -6,6 +6,24 @@ Photos aspect ratio: 3:2
 If photo fits (matching height) with Transform Zoom = 1, then to fill the screen (matching width) the zoom must be:
 (16/3)/(9/2) = 1.185185... or 1.1852 or 1.186 or 1.19 for full coverage.
 
+== Directories organization
+
+Either backup default database from `%APPDATA%/Blackmagic Design/DaVinci Resolve/Support/Resolve Disk Database/Resolve Projects`
+or create a new one in "home screen" in already backed-up directory, e.g. `C:\work\video-projects\resolve-project-db`.
+
+Other directories to check:
+
+* Open *DaVinci Resolve | Preferences*, then *System* section *Media Storage* and set first directory to a path where
+you want the cache files - probably something not backed-up, e.g. `C:\work\tmp\resolve-cache`.
+Add other entries with media you normally use.
+
+* In preferences, *User* section *Project Save and Load*, group *Save Settings* change *Project backup location*
+to something out of backed-up dirs, e.g. `C:\work\tmp\resolve-cache\project-backups`.
+
+* For existing projects, check *Project Settings* (bottom right cog wheel), *Master Settings*,
+group *Working Folders* to values like `C:\work\tmp\resolve-cache\ProxyMedia`,
+`CacheClip` (not sure about this one yet) and `C:\work\tmp\resolve-cache\.gallery`.
+
 == TODO
 
 How to hover above a map with rotation in place after translate?
