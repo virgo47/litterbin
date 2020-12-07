@@ -54,6 +54,11 @@ ffmpeg.exe -i "$1" -map 0:3 -c:a copy -vn "$BASE_NAME"-mic.m4a
 It will create MP4 with audio 1 (mix of PC and mic sound) and 2 more M4A files with separated audio.
 Strangely enough, M4A files are smaller than raw AAC - and enable seeking in players like foobar2000.
 
+[IMPORTANT]
+One value of CRF can compress nicely for 60 FPS while actually making the filesize grow on 30 FPS.
+For lower FPS higher value of CRF (lower quality) should be considered.
+// TODO can we automate it somehow? Probably not, we still need to check video, its content, noise, etc.
+
 == Notes
 
 * multi-track audio recording
