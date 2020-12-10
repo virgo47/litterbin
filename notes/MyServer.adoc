@@ -1,52 +1,51 @@
-# Setup of my server
+= Setup of my server
+:page-toc: top
 
+== "Metal"
 
-## "Metal"
+AWS Amazon Linux 2 server.
 
-AWS AMI server. 
+== NGINX with PHP
 
-
-## NGINX with PHP
-
-I probably used something [like this](https://www.howtoforge.com/tutorial/installing-nginx-with-php7-fpm-and-mysql-on-ubuntu-16.04-lts-lemp/)
+I probably used something https://www.howtoforge.com/tutorial/installing-nginx-with-php7-fpm-and-mysql-on-ubuntu-16.04-lts-lemp/[like this]
 and combined it with AMI specific instructions (Google it).
-[This Gist](https://gist.github.com/nrollr/56e933e6040820aae84f82621be16670) also seems interesting.
+https://gist.github.com/nrollr/56e933e6040820aae84f82621be16670[This Gist] also seems interesting.
 
-To remove `X-Powered-By` header with PHP version edit `/etc/php-7.0.ini`, search for
-`expose_php = On` and set it to `Off`. Restart of `php-fpm` is required (maybe `nginx` as well).
+To remove `X-Powered-By` header with PHP version edit `/etc/php-7.0.ini`, search for `expose_php = On` and set it to `Off`.
+Restart of `php-fpm` is required (maybe `nginx` as well).
 
 Removing NGINX's `Server` header seems to be more tricky, but if removing the version number is
 enough we can add `server_tokens off;` to `http` section of our `nginx.conf` (and restart the
 service).
 
-
-## HTTPS setup
+== HTTPS setup
 
 Tutorials:
 * Very good presentation of HTTPS basics: https://www.nginx.com/blog/nginx-https-101-ssl-basics-getting-started/
 * HTTPS setup on NGINX: http://nginx.org/en/docs/http/configuring_https_servers.html
 
+=== First with self-signed cert
 
-### First with self-signed cert
+Let's try to set up HTTPS first before we try to get some trusted certificate.
 
-Let's try to setup HTTPS first before we try to get some trusted certificate.
-
-```
+[source]
+----
 sudo -i
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigne d.key -out /etc/ssl/certs/nginx-selfsigned.crt
-```
+----
 
 Most answers are irrelevant for now, common name should be `virgo47.com` (or `www.virgo47.com`)
 but with self-signed we will have browser warning anyway.
 
 Next edit `/etc/nginx/nginx.conf` and enable TLS:
 
-```
+[source]
+----
     server {
         listen       443 ssl;
         listen       [::]:443 ssl;
         server_name  virgo47.com;
-        root         /home/ec2-user/virgo;
+        root         /home/ec2-user/www;
 
         ssl_certificate "/root/nginx-selfsigned.crt";
         ssl_certificate_key "/root/nginx-selfsigned.key";
@@ -67,31 +66,32 @@ Next edit `/etc/nginx/nginx.conf` and enable TLS:
             location = /50x.html {
         }
     }
-```
+----
 
-SSL works. Somehow. If browser can't get there (to https) at all we forgot to allow HTTPS (port 443)
+SSL works.
+Somehow.
+If browser can't get there (to https) at all we forgot to allow HTTPS (port 443)
 in our Lightsail console, Firewall section.
 
 I also generated my own `dhparams.pem` as recommended in the `nginx.conf` and enabled the line.
 
+=== Proper certificate
 
-### Proper certificate
+I wanted free trusted certificate, I chose https://letsencrypt.org/getting-started/[Let's Encrypt].
 
-I wanted free trusted certificate, I chose
-[Let's Encrypt](https://letsencrypt.org/getting-started/).
-
-There are couple of tutorials for AWS EC2 and Certbot, often about Lightsail and Let's Encrypt in
+There is a couple of tutorials for AWS EC2 and Certbot, often about Lightsail and Let's Encrypt in
 particular (but not always working for current versions, rather used as an inspiration):
 * http://www.alondiamant.com/2016-12-20-using-lets-encrypt-certificates-with-wordpress-on-amazon-lightsail
 * https://coderwall.com/p/e7gzbq/https-with-certbot-for-nginx-on-amazon-linux
 * https://nouveauframework.org/blog/installing-letsencrypts-free-ssl-amazon-linux/
 
 
-#### What actually worked after problems with zope module
+==== What actually worked after problems with zope module
 
-After reading comments in [this issue](https://github.com/certbot/certbot/issues/2872) I found
+After reading comments in https://github.com/certbot/certbot/issues/2872[this issue] I found:
 
-```
+[source]
+----
 pip install pip --upgrade
 pip install virtualenv --upgrade
 virtualenv -p /usr/bin/python27 venv27
@@ -100,10 +100,12 @@ git clone https://github.com/letsencrypt/letsencrypt
 cd letsencrypt
 # Nginx MUST be down for this
 ./letsencrypt-auto certonly --debug --standalone -d virgo47.com
-```
+----
 
 This worked without problem:
-```
+
+[source]
+----
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at
    /etc/letsencrypt/live/virgo47.com/fullchain.pem. Your cert will
@@ -120,61 +122,67 @@ IMPORTANT NOTES:
 
    Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
    Donating to EFF:                    https://eff.org/donate-le
-```
+----
 
-Certificate is valid [only for 90 days](https://letsencrypt.org/2015/11/09/why-90-days.html)
+Certificate is valid https://letsencrypt.org/2015/11/09/why-90-days.html[only for 90 days]
 though so we want to automate the renewal process (lower).
 
 Content of `/etc/letsencrypt/live/virgo47.com/` directory:
-```
-cert.pem  chain.pem  fullchain.pem  privkey.pem  README
-```
 
-`README` shortly explains that `fullchain.pem` should probably used, not `cert.pem`. More
-thorough documentation is [here](https://certbot.eff.org/docs/using.html#where-are-my-certificates).
+[source]
+----
+cert.pem  chain.pem  fullchain.pem  privkey.pem  README
+----
+
+`README` shortly explains that `fullchain.pem` should probably be used, not `cert.pem`.
+More thorough documentation is https://certbot.eff.org/docs/using.html#where-are-my-certificates[here].
 
 This changes our lines in `nginx.conf` as so:
-```
+
+[source]
+----
         ssl_certificate "/etc/letsencrypt/live/virgo47.com/fullchain.pem";
         ssl_certificate_key "/etc/letsencrypt/live/virgo47.com/privkey.pem";
-```
+----
 
 Because Let's Encrypt does NOT offer wildcard certificates we need to repeat the process
 for `www.virgo47.com` as well and set another server sections in `nginx.conf` for it
-with different `server_name` and different paths to key and certificate. Not a big deal
-(except for the duplication :-)).
+with the different `server_name` and different paths to key and certificate.
+Not a big deal (except for the duplication :-)).
 
-
-#### Non-working standard process
+==== Non-working standard process
 
 I tried this one first, but I ended up with:
 
-```
+[source]
+----
 sudo -i
 mkdir tmp
 cd tmp
 wget https://dl.eff.org/certbot-auto
 chmod a+x certbot-auto
 ./certbot-auto --nginx
-```
+----
 
 Now the last command should help with NGINX support, but for Lightsail server it said:
 
-```
+[source]
+----
 FATAL: Amazon Linux support is very experimental at present...
 if you would like to work on improving it, please ensure you have backups
 and then run this script again with the --debug flag!
 Alternatively, you can install OS dependencies yourself and run this script
 again with --no-bootstrap.
-```
+----
 
-So for certbot documentaion I chose *I'm using* **None of the above** *on* **Other UNIX**
+So for certbot documentation I chose *I'm using* **None of the above** *on* **Other UNIX**
 which leads here: https://certbot.eff.org/#pip-other
 
-But even with `./certbot-auto certonly` it still complaints. We can try to add `--debug` which
-installs some new packages (ptyhon27, etc.) but the command fails afterwards anyway:
+But even with `./certbot-auto certonly` it still complaints.
+We can try to add `--debug` which installs some new packages (python27, etc.) but the command fails afterwards anyway:
 
-```
+[source]
+----
 # ./certbot-auto certonly --standalne --debug -d virgo47.com -n
 Error: couldn't get currently installed version for /root/.local/share/letsencrypt/bin/letsencrypt:
 Traceback (most recent call last):
@@ -185,20 +193,20 @@ Traceback (most recent call last):
   File "/root/.local/share/letsencrypt/local/lib/python2.7/dist-packages/zope/component/__init__.py", line 16, in <module>
     from zope.interface import Interface
 ImportError: No module named interface
-```
+----
 
 See the process above with virtualenv.
 
-
-#### Renewal script
+==== Renewal script
 
 Renewing is pretty straightforward. Using `letsencrypt-auto`:
 
-```
+[source]
+----
 ~/letsencrypt/letsencrypt-auto renew --pre-hook "service nginx stop" --post-hook "service nginx start"
-```
+----
 
-As described in the [certbot docs](https://certbot.eff.org/docs/using.html#renewing-certificates)
+As described in the https://certbot.eff.org/docs/using.html#renewing-certificates [certbot docs]:
 When it does not need to renew it will try to renew all known certificates but it will not renew
 unless 30 days before expiration.
 
@@ -206,26 +214,28 @@ This does not require `virtualenv` (tested with successful renewal) so the scrip
 contain the single line. I added some "logging", put it directly into root's home
 and named it `renew-certs.sh`):
 
-```
+[source]
+----
 #!/bin/sh
 
 ~/letsencrypt/letsencrypt-auto renew \
   --pre-hook "/sbin/service nginx stop" \
   --post-hook "/sbin/service nginx start" &> \
   ~/renewal-`date +%FT%T`.log
-```
+----
 
-Set the executable flag and setup the crontab:
+Set the executable flag and set up the crontab:
 
-```
+[source]
+----
 cd
 chmod 700 renew-certs.sh
 (crontab -l | grep -v 'renew-certs'; echo "47 0 * * 0 $HOME/renew-certs.sh") | crontab -
-```
+----
 
 Later (in this case after Sunday) check whether some log files appear in root's home directory
 or use some closer time first to assure it runs (check `date` it may be UTC, hence different
-than local).
+from local).
 
 NOTE: I'm using `grep -v` for older `renew-cert` lines in crontab as I want to replace them. Tilde
 is NOT recommended in crontab, hence the `$HOME` which, BTW, gets expanded before being written
@@ -234,32 +244,35 @@ into crontab. This can be prevented, but there is no reason to do so, if the pat
 The first time the cronjob ran and actually was about to renew the log (`renewal-...` file)
 contained this error:
 
-```
+[source]
+----
 Failed to find executable service in expanded PATH: /usr/bin:/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 Unable to find pre-hook command service in the PATH.
 (PATH is /usr/bin:/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin)
-```
+----
 
 Running `which service` reveals the executable `service` is in `/sbin` which is not in the `PATH`
-listed in the error (it is, however, in the PATH of interactive shell). See [these
-tips](http://krisjordan.com/essays/timesaving-crontab-tips) for explanation. Options are: a)
-set PATH in the `renew-certs.sh` explicitly, b) use full path for `service` hooks in the script.
+listed in the error (it is, however, in the PATH of interactive shell).
+See http://krisjordan.com/essays/timesaving-crontab-tips[these tips] for explanation.
+Options are: a) set PATH in the `renew-certs.sh` explicitly, b) use full path for `service` hooks in the script.
 
 I tried the latter (already applied in the script listing above).
 
-
-### Checking configuration
+=== Checking configuration
 
 We can see in the browser that it works and what certification authority issued the certificate.
 But we can also use `curl` to test the connection with various SSL protocols as we don't want
 to support all the versions anyway.
 
-```
+[source]
+----
 curl --head -vi https://virgo47.com
-```
+----
 
 This shows that by default TLSv1.2 is selected and also displays something about the certificate:
-```
+
+[source]
+----
 * SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
 * ALPN, server did not agree to a protocol
 * Server certificate:
@@ -269,29 +282,31 @@ This shows that by default TLSv1.2 is selected and also displays something about
 *        subjectAltName: virgo47.com matched
 *        issuer: C=US; O=Let's Encrypt; CN=Let's Encrypt Authority X3
 *        SSL certificate verify ok.
-```
+----
 
-We can enforce other version of TLS/SSL like so:
+We can enforce another version of TLS/SSL like so:
 
-```
+[source]
+----
 curl --sslv2 --head -vi https://virgo47.com
 ...
 * SSLv2 (OUT), , Client hello (1):
 * Unknown SSL protocol error in connection to virgo47.com:443
 * Closing connection 0
 curl: (35) Unknown SSL protocol error in connection to virgo47.com:443
-```
+----
 
-Using `--ssl` means to enable SSL/TLS in general, we can choose concrete version with `--sslv2`
-or `--sslv3`. By default both are refused. We can also see that TLS is supported including
-version 1.0:
+Using `--ssl` means to enable SSL/TLS in general, we can choose concrete version with `--sslv2` or `--sslv3`.
+By default, both are refused.
+We can also see that TLS is supported including version 1.0:
 
-```
+[source]
+----
 curl --tlsv1.0 --head -vi https://virgo47.com
 ...
 * SSL connection using TLSv1.0 / ECDHE-RSA-AES256-SHA
 ...
-```
+----
 
 Using `--tlsv1` will negotiate any TLSv1.x, preferring 1.2, of course.
 
@@ -299,106 +314,168 @@ Supporting anything from TLS 1.0 higher is OK, 1.2 only would be a bit harsh for
 
 We can also test various cipher suits with `curl --ciphers ...`.
 
+=== OCSP Stapling
 
-### OCSP Stapling
-
-[OCSP Stapling](https://en.wikipedia.org/wiki/OCSP_stapling) (or also [here](https://www.keycdn.com/support/ocsp-stapling/))
+https://en.wikipedia.org/wiki/OCSP_stapling[OCSP Stapling] (or also https://www.keycdn.com/support/ocsp-stapling/[here])
 makes the TLS negotiation faster. It requires the following changes in HTTPS `server` sections:
-```
+
+[source]
+----
 server {
 ...
         ssl_stapling on;
         ssl_stapling_verify on;
         ssl_trusted_certificate "/etc/letsencrypt/live/www.virgo47.com/chain.pem";
         resolver 8.8.8.8 8.8.4.4;
-```
+----
 
 We can test it with:
-```
+
+[source]
+----
 openssl s_client -connect www.virgo47.com:443 -tls1 -tlsextdebug -status
-```
+----
 
 After server restart it may first say:
-```
+
+[source]
+----
 OCSP response: no response sent
-```
+----
 
-But it [should work the next time](https://www.vlent.nl/weblog/2014/04/19/ocsp-stapling-in-nginx/).
+But it https://www.vlent.nl/weblog/2014/04/19/ocsp-stapling-in-nginx/[should work the next time].
 
-I also experimented with OCSP Stapling enabled in section for `www.virgo47.com` but not in the
-`virgo47.com` one. That seemed to not work consistently, not even for requests to `www` virtual
-server. I made it consistent as planned.
+I also experimented with OCSP Stapling enabled in section for `www.virgo47.com` but not in the `virgo47.com` one.
+That seemed to not work consistently, not even for requests to `www` virtual server.
+I made it consistent as planned.
 
+=== HTTP/2
 
-### HTTP/2
-
-Setting [HTTP/2](https://en.wikipedia.org/wiki/HTTP/2) should be easy in the config - adding
+Setting https://en.wikipedia.org/wiki/HTTP/2[HTTP/2] should be easy in the config - adding
 `http2` into `listen` directives will do:
-```
+
+[source]
+----
     server {
         listen       443 ssl http2;
         listen       [::]:443 ssl http2;
 ...
-```
+----
 
-After restart it still seems not to working in browsers, but it works with
-[HTTP/2 test](https://tools.keycdn.com/http2-test). However, this test also says that
-[ANLP is not supported](https://serverfault.com/questions/831534/why-is-alpn-not-supported-by-my-server).
+After the restart it still seems not working in browsers, but it works with
+https://tools.keycdn.com/http2-test[HTTP/2 test].
+However, this test also says that https://serverfault.com/questions/831534/why-is-alpn-not-supported-by-my-server[ANLP is not supported].
 What does that mean?
 
-[ALNP](https://en.wikipedia.org/wiki/Application-Layer_Protocol_Negotiation) is used by browsers
-to upgrade to HTTP/2 -- and that's why it does not work in them. The reason is that at the time
-of writing NGINX Amazon Linux is built with OpenSSL 1.0.1 which does not support ANLP. **Good news!
-As of Oct 2017 AMI Linux has OpenSSL 1.1 and ALNP works and browsers report HTTP/2.0!** 
+https://en.wikipedia.org/wiki/Application-Layer_Protocol_Negotiation[ALNP] is used by browsers
+to upgrade to HTTP/2 -- and that's why it does not work in them.
+The reason is that at the time of writing NGINX Amazon Linux is built with OpenSSL 1.0.1 which does not support ANLP.
+**Good news! As of Oct 2017 AMI Linux has OpenSSL 1.1 and ALNP works and browsers report HTTP/2.0!**
 
-To some [this is a big issue](https://forums.aws.amazon.com/thread.jspa?messageID=752725) (requires
+To some https://forums.aws.amazon.com/thread.jspa?messageID=752725[this is a big issue] (requires
 login), I'll probably just wait for the support as I don't require HTTP/2 yet.
 
-
-### Testing with SSL Labs
+=== Testing with SSL Labs
 
 Try this: https://www.ssllabs.com/ssltest/analyze.html?d=virgo47.com&latest
 
-This is a thorough test and will report a lot of various facts and issues. After my rating
-was lowered to A- because of [Forward secrecy](https://blog.qualys.com/ssllabs/2013/06/25/ssl-labs-deploying-forward-secrecy)
+This is a thorough test and will report a lot of various facts and issues.
+After my rating was lowered to A- because of https://blog.qualys.com/ssllabs/2013/06/25/ssl-labs-deploying-forward-secrecy[Forward secrecy]
 I also added/enabled the following lines in both my secured `server` sections:
-```
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+[source]
+----
         ssl_prefer_server_ciphers on;
-        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
-```
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+----
+
+[NOTE]
+Dec 2020: Protocols changed to TLS 1.2 and 1.3 only, but 1.3 will not work with OpenSSL version shipped with Amazon Linux 2.
+Whatever.
 
 These were also recommended in other articles and the rating went to A (100/95/90/90).
 
 Now to get to 100 on protocol, I guess I need to fix
-[DNS CAA: No](https://blog.qualys.com/ssllabs/2017/03/13/caa-mandated-by-cabrowser-forum) warning.
-Currently I can't because it's not [Let's Encrypt's business](https://letsencrypt.org/docs/caa/)
-but one of my DNS provider - and [Namecheap does not support CAA
-entries](https://www.namecheap.com/support/knowledgebase/article.aspx/535/51/what-type-of-dns-records-can-i-manage)
-(at least not yet, it's planned with no ETA).
+https://blog.qualys.com/ssllabs/2017/03/13/caa-mandated-by-cabrowser-forum[DNS CAA: No] warning.
+I can't do that currently because it's not https://letsencrypt.org/docs/caa/[Let's Encrypt's business]
+but one of my DNS provider - and https://www.namecheap.com/support/knowledgebase/article.aspx/535/51/what-type-of-dns-records-can-i-manage[Namecheap
+does not support CAA entries] (at least not yet, it's planned with no ETA).
 
-Further ways how to improve Key Exchange and Cipher Strength is probably to drop TLS 1.0/1.1, but
-this would unnecessarily lower the accessibility of the page.
+=== Sending HTTP to HTTPS
 
-
-### Sending HTTP to HTTPS
-
-While I could leave 80 running on - and I did - it causes unnecessary confusion. After some
-problems with [progressive web app](https://en.wikipedia.org/wiki/Progressive_web_app) (when I
-placed HTTP version on home screen and [service worker](https://developers.google.com/web/fundamentals/primers/service-workers/)
+While I could leave 80 running on - and I did - it causes unnecessary confusion.
+After some problems with https://en.wikipedia.org/wiki/Progressive_web_app[progressive web app]
+(when I placed HTTP version on home screen and https://developers.google.com/web/fundamentals/primers/service-workers/[service worker]
 didn't work as expected to support the app in offline) I finally decided for the logical step
 and replaced the block with port 80 like this:
 
-```
+[source]
+----
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 	server_name _;
 	return 301 https://$host$request_uri;
 }
-```
+----
 
 Underscore for `server_name` is one of possible invalid names as it does not matter here. Good
 thing here is that the browser will execute the redirect to HTTPS, it's not transparent redirection
 (reverse-proxy style) which is actually not recommended as user/client may send sensitive data
 and server will think it's secured. 301 involves the client and is safer that way.
+
+== December 2020 Amazon Linux 2 update
+
+----
+sudo amazon-linux-extras install nginx1
+sudo amazon-linux-extras install php7.4
+sudo service nginx start
+----
+
+Go to HTTP (not HTTPS, which will be probably used by default by the browser) on the public address to see NGINX running.
+HTTPS is not enabled by default and there is also firewall rule for it in the Lightsail admin console.
+Allow HTTPS in the admin console first, then continue with the NGINX settings:
+
+----
+sudo vi /etc/nginx/nginx.conf
+----
+
+In the config change the `root` directive to `/home/ec2-user/www` - nothing more has to be done now.
+Restart NGINX, change IP for the domain, test, 403 occurs - let's fix it as `ec2-user`:
+
+----
+cd
+chmod 755 .
+mkdir www
+echo "bu" www/index.html
+----
+
+Test again, everything works, fine.
+Transfer the web from the old server.
+Let's set up HTTPS with Let's Encrypt/certbot.
+
+Official, but does not help for Amazon Linux 2: https://certbot.eff.org/instructions
+This helps, although with minor changes (it's for Apache): https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html
+
+----
+sudo wget -r --no-parent -A 'epel-release-*.rpm' https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
+sudo rpm -Uvh dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-*.rpm
+sudo yum-config-manager --enable epel*
+sudo yum repolist all
+sudo yum install python2-certbot-nginx
+sudo certbot
+----
+
+Answer the questions, fill the stuff, e.g. virgo47.com,www.virgo47.com for server names.
+Certbot will actually change the configuration and adds server section for 443 that seems to work just fine.
+
+To assure periodic renewal, follow through with the crond setup:
+
+----
+sudo crontab -e
+# add the following line
+39      1,13    *       *       *       root    certbot renew --no-self-upgrade
+# not sure whether needed when crontab command is used, but to be sure:
+sudo systemctl restart crond
+----
