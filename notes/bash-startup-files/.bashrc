@@ -39,6 +39,9 @@ alias gwp="gw --console plain"
 # ffmpeg without the banner
 alias ff='ffmpeg -hide_banner'
 
+# find top 50 last modified files recursively (%TS with fractions omitted)
+alias flast='find -type f -printf "%TY-%Tm-%Td %TH:%TM %p\n" | sort -r | head -50'
+
 echo "Aliases set up:"
 alias
 # end::aliases[]
