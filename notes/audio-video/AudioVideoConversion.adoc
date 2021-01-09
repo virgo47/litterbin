@@ -64,7 +64,7 @@ for FIN in "$@"; do
   mv -n "${FIN}" "${FOLD}"
 
   # Use FNEW from now on, FIN would not work properly for *.MOVs
-  ffmpeg.exe -hide_banner -i "${FOLD}" -crf $CRF -c:a copy "${FNEW}"
+  ffmpeg.exe -hide_banner -i "${FOLD}" -crf $CRF -c:a copy -c:s copy "${FNEW}"
   exiftool -overwrite_original -TagsFromFile "${FOLD}" "${FNEW}"
 done
 ----
@@ -75,6 +75,10 @@ Compression is typically 2-3x for MP4 videos and varying for MOV timelapses.
 `Q/TQ` is not the `quality` reported during transcoding, there is some offset.
 In any case it is used as `crf` argument and lower is better quality (bigger file)
 with 23 being default for `ffmpeg` which is much lower quality than original files from Canon EOS 200D.
+
+[NOTE]
+Script is useful also for other sources like DJI drone (that's why subtitles are copied with `-c:s copy`)
+or videos from the phone/tablet.
 
 Original files are preserved as `*_orig.*`, the extension is lower-cased not to be affected by repeated:
 
