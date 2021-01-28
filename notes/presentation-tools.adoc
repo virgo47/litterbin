@@ -1,0 +1,11 @@
+= Presentation Tools
+
+* https://obsproject.com/[OBS] for screen recording (or streaming).
+
+* IntelliJ IDEA plugin *Presentation Assistant* to show tooltips with keyboard shortcuts.
+Adjust settings in *File | Settings | Appearance & Behavior | Presentation Assistant*,
+e.g. show your own keymap as main and Windows with `by default` description
+(it's not possible to show Windows as main and Mac as alternative).
+
+* Use https://sites.google.com/view/catnip5/mouse-highlight[Mouse Highlight].
+Set 30/80 + yellow (`ffff00`) for mouse and 20/127/300 + green (`80ff80`) for click.
