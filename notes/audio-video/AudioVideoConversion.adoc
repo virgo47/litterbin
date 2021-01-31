@@ -1,10 +1,32 @@
-== First - the alias!
+= Audio and video conversions
+
+== First - the aliases
 
 ----
 alias ff='ffmpeg -hide_banner'
+alias exif='exiftool.exe -G1:2 -s -a'
 ----
 
-FFmpeg can be installed with `cinst -y imagemagick`.
+FFmpeg and exiftool can be installed with `cinst -y imagemagick exiftool`.
+Meaning of exiftool switches is this:
+
+* `-G1:2` shows group names for each tag, family number 1 means *specific
+location* and 2 is *category*;
+* `-s` printed tag names have no spaces and can be used as options;
+* `-a` shows all the tags, even duplicated ones.
+
+See more about exiftool https://exiftool.org/exiftool_pod.html[options]
+or https://exiftool.org/faq.html[FAQ]
+
+== Quick overview of video metadata
+
+To quickly see FPS and lenses used for videos during the day use:
+----
+exiftool -q -s2 -videoframerate -lensid *MVI* | sort -u
+----
+
+Option `-q` suppresses output of file names, `-s2` makes the output more compact
+and `sort -u` sorts the output leaving each unique line only once.
 
 == Fixing videos for Vegas/Movie Studio
 
@@ -17,6 +39,7 @@ ff -i XY.mp4 out.mp4
 
 Vegas can now import it and the file also gets considerably shorter without visible loss of quality.
 At least for that phone (results probably may vary).
+Alternatively, use the conversion script below, potentially with `Q=...` prefix.
 
 == Canon video conversion
 
@@ -24,6 +47,7 @@ Videos from Canon EOS 200D can be recoded by `ffmpeg` to much smaller files with
 Usage of `ffmpeg` is complemented with `exiftool` to preserve the important metadata (creation date, camera and lens).
 The following script does the job:
 
+.canon-video-conver.sh
 ----
 #!/bin/bash
 #
