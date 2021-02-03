@@ -20,7 +20,7 @@ Specific `setenv-*.sh` script can be used also to install the tool into `$TOOLS_
 definition file for it is prepared beforehand.
 For example:
 ----
-. cicd/setenv-java.sh zulujdk-12.0.1
+. cicd/setenv-java.sh zulujdk-15.0.2
 ----
 
 == Using `tool-download.sh` to install tool
