@@ -27,3 +27,48 @@ group *Working Folders* to values like `C:\work\tmp\resolve-cache\ProxyMedia`,
 == TODO
 
 How to hover above a map with rotation in place after translate?
+
+== Title packs
+
+There are at least three locations for Fusion titles in DaVinci Resolve:
+
+* Under `DaVinci Resolve` installation folder (typically under `Program Files`)
+and there the titles are under `Fusion/Templates/Edit/Titles`.
+This is for default titles and I'd not install anything additional here.
+* Under `ProgramData/Blackmagic Design/DaVinci Resolve` and then again the same
+subdirectory as above - this is one option for globally added titles.
+* And finally, under `$APPDATA/Blackmagic Design/DaVinci Resolve/Support` and
+then again path starting with `Fusion/...` like before.
+This is ideal for per-user installed titles.
+
+Either of the latter options is suitable for additional custom titles.
+
+To locate the directory with concrete custom title:
+
+image:img/davinci-resolve-custom-fusion-titles-location.png[]
+
+1. You must go to *Fusion Page* first.
+2. Go to *Effects Library*.
+3. Choose *Edit Templates/Titles*
+4. Locate the title of interest, right-click and click *Show Folder*.
+5. Folder with located title will open - in this case it's custom title under
+`ProgramData`.
+
+If you right click *Titles* in the navigation pane you can use *Show Folder*
+there which takes you to the default location for custom titles *if no title
+is selected in the list* (otherwise it takes you to the location of that title).
+It is possible to move custom titles from `ProgramData` location to `$APPDATA`
+without any harm (tested with DaVinci Resolve closed, of course).
+
+See https://youtu.be/a1_DcaA_FtM[this video] for example how to install fonts.
+
+[NOTE]
+If the titles don't show up but the geometric stuff does, it's likely only
+the fonts are missing.
+Typically, they are mentioned in README and can be installed, but you can also
+change the used font in the Inspector instead (results may vary, of course).
+
+Used custom titles:
+
+* https://motionarray.com/davinci-resolve-templates/simple-creative-titles-860872[Simple
+Creative Titles] by vladoskin
