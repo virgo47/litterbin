@@ -475,7 +475,7 @@ To assure periodic renewal, follow through with the crond setup:
 ----
 sudo crontab -e
 # add the following line
-39      1,13    *       *       *       root    certbot renew --no-self-upgrade
+39      1,13    *       *       *       certbot renew --no-self-upgrade
 # not sure whether needed when crontab command is used, but to be sure:
 sudo systemctl restart crond
 ----
