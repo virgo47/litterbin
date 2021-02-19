@@ -1,3 +1,0 @@
-= Music production
-
-For music production notes see: https://github.com/virgo47/music-production

@@ -10,3 +10,5 @@ e.g. show your own keymap as main and Windows with `by default` description
 
 * Use https://sites.google.com/view/catnip5/mouse-highlight[Mouse Highlight].
 Set 30/80 + yellow (`ffff00`) for mouse and 20/127/300 + green (`80ff80`) for click.
+
+Also see https://github.com/virgo47/audio-video-production[these notes] for post-processing.
