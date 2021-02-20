@@ -145,8 +145,28 @@ cinst -y gnuwin32-sed.install
 
 == Installing fonts
 
-Source * Pro fonts by Adobe, `svn` command necessary to avoid manual download.
-Uses SVN trick to download subdirectory of GitHub project (`--force` needed if directory exists).
+Source * Pro fonts by Adobe and many others can now be downloaded from https://fonts.google.com.
+The following bash snippet downloads all the fonts of interest and unpacks them.
+Execute in some temporary directory:
+
+----
+wget -q https://fonts.google.com/download?family=Poppins -O poppins.zip
+wget -q https://fonts.google.com/download?family=Raleway -O raleway.zip
+wget -q https://fonts.google.com/download?family=Josefin%20Sans -O jozefin-sans.zip
+wget -q https://fonts.google.com/download?family=Open%20Sans -O open-sans.zip
+wget -q https://fonts.google.com/download?family=Source%20Sans%20Pro -O source-sans-pro.zip
+wget -q https://fonts.google.com/download?family=Source%20Serif%20Pro -O source-serif-pro.zip
+wget -q https://fonts.google.com/download?family=Source%20Code%20Pro -O source-code-pro.zip
+for i in *.zip; do unzip -qo $i; done
+----
+
+After that open `TTF` folder, select `*.ttf` files, right-click, install fonts.
+Some fonts are "variable" and their "static" counterparts are in sub-folders which can be omitted.
+
+=== Trick with GitHub SVN export
+
+While not useful for fonts if the script above is used this is a neat trick on its own.
+SVN can download subdirectory of GitHub project (`--force` needed if directory exists).
 Go to some temporary/download directory and:
 
 ----
