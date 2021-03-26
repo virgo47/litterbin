@@ -11,8 +11,8 @@ include::bash-startup-files/.profile[tag=setjava]
 ----
 
 This requires that **all those variables have short path (or at least no spaces)** which can be
-checked by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly. This also
-uses `cygpath`, but that one is available as part of git bash environment.
+checked by `dir /x` (on Windows) or even switched in Rapid Environment Editor directly.
+This also uses `cygpath`, but that one is available as part of git bash environment.
 
 == Aliases
 
@@ -29,7 +29,6 @@ I also set handy variables here:
 ----
 include::bash-startup-files/.bashrc[tag=variables]
 ----
-
 
 == Git
 

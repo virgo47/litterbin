@@ -12,26 +12,19 @@
 # msys for Windows+Git, linux for Linux or darwin for OSX
 case "${OSTYPE//[0-9.-]*/}" in
 	msys)
-		ARCHIVE_URL=https://cdn.azul.com/zulu/bin/zulu14.28.21-ca-jdk14.0.1-win_x64.zip
-		FINAL_DIR=zulu14.28.21-ca-jdk14.0.1-win_x64
-		ARCHIVE_SUM=9cb078b5026a900d61239c866161f0d9558ec759aa15c5b4c7e905370e868284
+		ARCHIVE_URL=https://cdn.azul.com/zulu/bin/zulu16.28.11-ca-jdk16.0.0-win_x64.zip
+		FINAL_DIR=zulu16.28.11-ca-jdk16.0.0-win_x64
+		ARCHIVE_SUM=6cbf98ada27476526a5f6dff79fd5f2c15e2f671818e503bdf741eb6c8fed3d4
 		ARCHIVE_SUM_APP=sha256sum
 		UNPACK_APP=unzip
 		;;
 
 	linux)
-		ARCHIVE_URL=https://cdn.azul.com/zulu/bin/zulu15.29.15-ca-jdk15.0.2-linux_musl_x64.tar.gz
-		FINAL_DIR=zulu14.28.21-ca-jdk14.0.1-linux_x64
-		ARCHIVE_SUM=48bb8947034cd079ad1ef83335e7634db4b12a26743a0dc314b6b861480777aa
+		ARCHIVE_URL=https://cdn.azul.com/zulu/bin/zulu16.28.11-ca-jdk16.0.0-linux_x64.tar.gz
+		FINAL_DIR=zulu16.28.11-ca-jdk16.0.0-linux_x64
+		ARCHIVE_SUM=236b5ea97aff3cb312e743848d7efa77faf305170e41371a732ca93c1b797665
 		ARCHIVE_SUM_APP=sha256sum
 		UNPACK_APP="tar xzvf"
 		;;
 
-	darwin)
-		ARCHIVE_URL=https://cdn.azul.com/zulu/bin/zulu14.28.21-ca-jdk14.0.1-macosx_x64.tar.gz
-		FINAL_DIR=zulu14.28.21-ca-jdk14.0.1-macosx_x64
-		ARCHIVE_SUM=088bd4d0890acc9f032b738283bf0f26b2a55c50b02d1c8a12c451d8ddf080dd
-		ARCHIVE_SUM_APP="shasum -a 256"
-		UNPACK_APP="tar xzvf"
-		;;
 esac
