@@ -26,6 +26,6 @@ configure(allprojects) {
 }
 
 dependencies {
-	compile 'com.google.guava:guava:17.0'
+	compile 'com.google.guava:guava:30.1.1-jre'
 	provided 'javax:javaee-api:7.0'
 }
