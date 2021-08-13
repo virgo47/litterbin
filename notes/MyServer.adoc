@@ -1,9 +1,76 @@
 = Setup of my server
 :page-toc: top
 
+This page describes how to run Nginx with PHP and HTTPS with Let's Encrypt certificates on Amazon Linux 2.
+See the first section with updated version first, then look lower for details which may be out of date a bit.
+
 == "Metal"
 
 AWS Amazon Linux 2 server.
+
+== December 2020 Amazon Linux 2 update
+
+----
+sudo amazon-linux-extras install nginx1
+sudo amazon-linux-extras install php7.4
+sudo service nginx start
+----
+
+Go to HTTP (not HTTPS, which will be probably used by default by the browser) on the public address to see NGINX running.
+HTTPS is not enabled by default and there is also firewall rule for it in the Lightsail admin console.
+Allow HTTPS in the admin console first, then continue with the NGINX settings:
+
+----
+sudo vi /etc/nginx/nginx.conf
+----
+
+In the config change the `root` directive to `/home/ec2-user/www` - nothing more has to be done now.
+Restart NGINX, change IP for the domain, test, 403 occurs - let's fix it as `ec2-user`:
+
+----
+cd
+chmod 755 .
+mkdir www
+echo "bu" www/index.html
+----
+
+Test again, everything works, fine.
+Transfer the web from the old server.
+Let's set up HTTPS with Let's Encrypt/certbot.
+
+Official, but does not help for Amazon Linux 2: https://certbot.eff.org/instructions
+This helps, although with minor changes (it's for Apache): https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html
+
+----
+sudo wget -r --no-parent -A 'epel-release-*.rpm' https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
+sudo rpm -Uvh dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-*.rpm
+sudo yum-config-manager --enable epel*
+sudo yum repolist all
+sudo yum install python2-certbot-nginx
+sudo certbot
+----
+
+Answer the questions, fill the stuff, e.g. virgo47.com,www.virgo47.com for server names.
+Certbot will actually change the configuration and adds server section for 443 that seems to work just fine.
+
+To assure periodic renewal, follow through with the `crond` setup:
+
+----
+sudo crontab -e
+# add the following lines
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+39      1,13    *       *       *       certbot renew --no-self-upgrade &> /root/certbot-cron.log
+
+# not sure whether needed when crontab command is used, but to be sure:
+sudo systemctl restart crond
+----
+
+Setting `PATH` may be critical component if the log shows that something wasn't
+found - as `nginx` binary in my case.
+This was suggested by https://stackoverflow.com/a/2409369/658826[this answer].
+Value of `PATH` was taken from current root's `$PATH`.
 
 == NGINX with PHP
 
@@ -424,58 +491,3 @@ Underscore for `server_name` is one of possible invalid names as it does not mat
 thing here is that the browser will execute the redirect to HTTPS, it's not transparent redirection
 (reverse-proxy style) which is actually not recommended as user/client may send sensitive data
 and server will think it's secured. 301 involves the client and is safer that way.
-
-== December 2020 Amazon Linux 2 update
-
-----
-sudo amazon-linux-extras install nginx1
-sudo amazon-linux-extras install php7.4
-sudo service nginx start
-----
-
-Go to HTTP (not HTTPS, which will be probably used by default by the browser) on the public address to see NGINX running.
-HTTPS is not enabled by default and there is also firewall rule for it in the Lightsail admin console.
-Allow HTTPS in the admin console first, then continue with the NGINX settings:
-
-----
-sudo vi /etc/nginx/nginx.conf
-----
-
-In the config change the `root` directive to `/home/ec2-user/www` - nothing more has to be done now.
-Restart NGINX, change IP for the domain, test, 403 occurs - let's fix it as `ec2-user`:
-
-----
-cd
-chmod 755 .
-mkdir www
-echo "bu" www/index.html
-----
-
-Test again, everything works, fine.
-Transfer the web from the old server.
-Let's set up HTTPS with Let's Encrypt/certbot.
-
-Official, but does not help for Amazon Linux 2: https://certbot.eff.org/instructions
-This helps, although with minor changes (it's for Apache): https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html
-
-----
-sudo wget -r --no-parent -A 'epel-release-*.rpm' https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
-sudo rpm -Uvh dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-*.rpm
-sudo yum-config-manager --enable epel*
-sudo yum repolist all
-sudo yum install python2-certbot-nginx
-sudo certbot
-----
-
-Answer the questions, fill the stuff, e.g. virgo47.com,www.virgo47.com for server names.
-Certbot will actually change the configuration and adds server section for 443 that seems to work just fine.
-
-To assure periodic renewal, follow through with the crond setup:
-
-----
-sudo crontab -e
-# add the following line
-39      1,13    *       *       *       certbot renew --no-self-upgrade
-# not sure whether needed when crontab command is used, but to be sure:
-sudo systemctl restart crond
-----
