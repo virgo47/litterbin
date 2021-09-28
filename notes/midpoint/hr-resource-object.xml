@@ -1,0 +1,140 @@
+<resource xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+          xmlns:c="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+          xmlns:q="http://prism.evolveum.com/xml/ns/public/query-3"
+          xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3"
+>
+
+    <name>HR</name>
+
+    <!-- <connectorRef oid="5c7d0e34-371a-426c-a39b-0c3726ad222c" relation="org:default" type="c:ConnectorType"/> -->
+    <connectorRef type="c:ConnectorType">
+        <filter>
+            <q:equal>
+                <q:path>c:connectorType</q:path>
+                <q:value>com.evolveum.polygon.connector.csv.CsvConnector</q:value>
+            </q:equal>
+        </filter>
+    </connectorRef>
+    <connectorConfiguration xmlns:icfc="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/connector-schema-3">
+        <icfc:configurationProperties
+                xmlns:icfcsv="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/bundle/com.evolveum.polygon.connector-csv/com.evolveum.polygon.connector.csv.CsvConnector">
+            <icfcsv:filePath>c:\work\tmp\midpoint-csv\hr.csv</icfcsv:filePath>
+            <icfcsv:encoding>utf-8</icfcsv:encoding>
+            <!--
+            <icfcsv:quoteMode>ALL</icfcsv:quoteMode>
+            <icfcsv:quote>"</icfcsv:quote>
+            <icfcsv:fieldDelimiter>,</icfcsv:fieldDelimiter>
+            <icfcsv:multivalueDelimiter>;</icfcsv:multivalueDelimiter>
+            <icfcsv:uniqueAttribute>name</icfcsv:uniqueAttribute>
+            <icfcsv:readOnly>true</icfcsv:readOnly>
+            -->
+            <icfcsv:ignoreSurroundingSpaces>true</icfcsv:ignoreSurroundingSpaces>
+        </icfc:configurationProperties>
+    </connectorConfiguration>
+
+    <schemaHandling>
+        <objectType>
+            <kind>account</kind>
+            <!-- What happens if intent is missing? -->
+            <intent>default</intent>
+            <default>true</default>
+            <objectClass>ri:AccountObjectClass</objectClass>
+            <attribute>
+                <ref>ri:name</ref>
+                <limitations>
+                    <access>
+                        <read>true</read>
+                        <add>false</add>
+                        <modify>false</modify>
+                    </access>
+                </limitations>
+                <inbound>
+                    <target>
+                        <path>$focus/name</path>
+                    </target>
+                </inbound>
+            </attribute>
+            <!--
+            <activation>
+                <administrativeStatus>
+                    <inbound/>
+                </administrativeStatus>
+            </activation>
+            -->
+        </objectType>
+    </schemaHandling>
+
+    <capabilities xmlns:cap="http://midpoint.evolveum.com/xml/ns/public/resource/capabilities-3">
+        <configured>
+            <cap:delete>
+                <cap:enabled>false</cap:enabled>
+            </cap:delete>
+            <cap:update>
+                <cap:enabled>false</cap:enabled>
+            </cap:update>
+            <cap:create>
+                <cap:enabled>false</cap:enabled>
+            </cap:create>
+            <cap:activation>
+                <cap:enabled>false</cap:enabled>
+                <!--                <cap:status>-->
+                <!--                    <cap:attribute>ri:empStatus</cap:attribute>-->
+                <!--                    <cap:enableValue>A</cap:enableValue>-->
+                <!--                    <cap:disableValue>F</cap:disableValue>-->
+                <!--                    <cap:disableValue>I</cap:disableValue>-->
+                <!--                    <cap:ignoreAttribute>false</cap:ignoreAttribute>-->
+                <!--                </cap:status>-->
+            </cap:activation>
+            <cap:countObjects>
+                <cap:simulate>sequentialSearch</cap:simulate>
+            </cap:countObjects>
+        </configured>
+    </capabilities>
+
+    <synchronization>
+        <objectSynchronization>
+            <name>Default account</name>
+            <kind>account</kind>
+            <intent>default</intent>
+            <!--
+            The synchronization for this resource is enabled.
+            It means that the synchronization will react to changes detected by
+            the system (live sync task, discovery or reconciliation)
+            -->
+            <enabled>true</enabled>
+            <correlation>
+                <q:equal>
+                    <q:path>name</q:path>
+                    <expression>
+                        <path>$projection/attributes/ri:name</path>
+                    </expression>
+                </q:equal>
+            </correlation>
+            <reaction>
+                <situation>linked</situation>
+                <synchronize>true</synchronize>
+            </reaction>
+            <reaction>
+                <situation>deleted</situation>
+                <synchronize>true</synchronize>
+                <action>
+                    <handlerUri>http://midpoint.evolveum.com/xml/ns/public/model/action-3#unlink</handlerUri>
+                </action>
+            </reaction>
+            <reaction>
+                <situation>unlinked</situation>
+                <synchronize>true</synchronize>
+                <action>
+                    <handlerUri>http://midpoint.evolveum.com/xml/ns/public/model/action-3#link</handlerUri>
+                </action>
+            </reaction>
+            <reaction>
+                <situation>unmatched</situation>
+                <synchronize>true</synchronize>
+                <action>
+                    <handlerUri>http://midpoint.evolveum.com/xml/ns/public/model/action-3#addFocus</handlerUri>
+                </action>
+            </reaction>
+        </objectSynchronization>
+    </synchronization>
+</resource>
