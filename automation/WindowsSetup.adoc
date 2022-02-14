@@ -9,7 +9,7 @@ Start with Chocolatey package system - in *administrative* cmd:
 ----
 
 All the following commands are with `cmd` syntax (e.g. `"` instead of `'`).
-By default Chocolatey downloads into TEMP directory, which results in repeated downloads, when
+By default, Chocolatey downloads into TEMP directory, which results in repeated downloads, when
 you experiment a lot with the same package.
 You may point it to a specific directory like this:
 
@@ -37,15 +37,15 @@ To upgrade all installed tools later we just use `cup -y all` (`all` is a specia
 We can install and download virtually any other favourite tool:
 
 [NOTE]
-Sometims `cinst` doesn't work as expected, e.g. it reports dependency resolution problems, etc.
-It's better to wait couple of hours (or days if possible), to let this problem go away, it's often
+Sometimes `cinst` doesn't work as expected, e.g. it reports dependency resolution problems, etc.
+It's better to wait a couple of hours (or days if possible), to let this problem go away, it's often
 nonessential and transitory (yet annoying).
 
 ----
 cinst -y classic-shell
 cinst -y firefox
 cinst -y notepad2
-cinst -y notepadreplacer -installarguments "/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
+cinst -y notepadreplacer --params="/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
 cinst -y TotalCommander
 cinst -y winmerge
 cinst -y rapidee
@@ -260,7 +260,7 @@ For I/O heavy folders (programming, video, photo) it's possible to turn off Wind
 then scroll down to *Exclusions*, link *Add or remove exclusions* and add directories like:
 ** `~/.IntelliJIdea2019.3/system` (Idea asks about it and fixes it anyway)
 ** `~/.m2` because of massive library caches
-** `~/.gradle` dtto
+** `~/.gradle` ditto
 ** `/c/work/workspace` programming projects
 ** `/c/work/video-projects` etc.
 
@@ -269,7 +269,7 @@ not a good idea.
 
 === Setting PATH and other environment variables permanently
 
-SETX is the command that should handle it, `/M` tells it to use system environment, not local one.
+`SETX` is the command that should handle it, `/M` tells it to use system environment, not local one.
 
 ----
 SETX /M JAVA_HOME "c:\Program Files\Java\jdk1.8.0_92"
@@ -321,7 +321,7 @@ menu=Git Bash Here
 console and using quotes around everything wouldn't work either.
 
 Then also add this to `wincmd.ini`
-in the same directory like `usercmd.ini` (both `Alt+B` and `Ctrl+B` launch Git Bash):
+in the same directory as `usercmd.ini` (both `Alt+B` and `Ctrl+B` launch Git Bash):
 
 ----
 [Shortcuts]
