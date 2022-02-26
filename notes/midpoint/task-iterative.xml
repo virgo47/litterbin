@@ -15,7 +15,14 @@ https://github.com/Evolveum/midpoint/blob/74280c5f506796da81a921ffc024fe941d2e14
         <work>
             <iterativeScripting>
                 <objects>
-                    <type>UserType</type>
+                    <type>SecurityPolicyType</type>
+                    <query>
+                        <q:filter>
+                            <q:inOid>
+                                <q:value>00000000-0000-0000-0000-000000000120</q:value>
+                            </q:inOid>
+                        </q:filter>
+                    </query>
                     <!-- optional, now it will process all users
                     <query>
                         <q:filter>
@@ -32,9 +39,10 @@ https://github.com/Evolveum/midpoint/blob/74280c5f506796da81a921ffc024fe941d2e14
                     <s:execute>
                         <s:script>
                             <code>
-                                if (basic.stringify(input.name)[-1] == '0') {
-                                    throw new IllegalStateException("Fatally failing on user: " + input.name)
-                                }
+                                println "BUBU: ${input.class}"
+<!--                                if (basic.stringify(input.name)[-1] == '0') {-->
+<!--                                    throw new IllegalStateException("Fatally failing on user: " + input.name)-->
+<!--                                }-->
                             </code>
                         </s:script>
                     </s:execute>
