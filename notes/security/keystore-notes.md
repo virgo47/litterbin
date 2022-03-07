@@ -39,6 +39,9 @@ Then it failed with:
 
 To fix this I used this answer: https://stackoverflow.com/a/53886108/658826
 
+If CA key is used, skip step 2 and use mycompany-ca.crt in -file parameter.
+Step 2 uses server certificate which can likely change quite often, root certificate is always preferred.
+
 As root:
 
 1. I went to my new favourite JDK:
@@ -48,13 +51,15 @@ cd /usr/lib/jvm/zulu17.28.13-ca-jdk17.0.0-linux_x64
 
 2. Download the certificate as PEM file using keytool:
 ````
-bin/keytool  -printcert -rfc -sslserver nexus.evolveum.com > ~/nexus_evolveum_com.pem
+bin/keytool  -printcert -rfc -sslserver nexus.mycompany.com > ~/nexus_mycompany_com.pem
 ````
 
-4. Install it to cacert file:
+3. Install it to cacert file:
 ````
 find -iname cacerts # printed ./lib/security/cacerts
-bin/keytool -importcert -file ~/nexus_evolveum_com.pem -keystore lib/security/cacerts
+bin/keytool -importcert -file ~/mycompany-ca.crt -alias mycompany-ca -keystore lib/security/cacerts
+# OR for server cert
+#bin/keytool -importcert -file ~/nexus_mycompany_com.pem -alias nexus-server -keystore lib/security/cacerts
 ````
 
 Next Maven run was the happy one.
