@@ -1,0 +1,37 @@
+= Examples
+
+== midPoint clone and build
+
+Clone on the host (VM with Ubuntu):
+
+----
+git clone https://github.com/Evolveum/midpoint.git
+----
+
+Running Maven+JDK container, e.g. the same as in our Jenkins pipelines (using `pwd` is important, relative `midpoint` does not work):
+
+----
+docker run -ti -v $(pwd)/midpoint:/mnt/midpoint --rm maven:3.8.5-openjdk-11-slim bash
+----
+
+Now, inside the container, we can quickly build midPoint (or rather "quickly", because of empty `~/.m2/repository`, but skipping tests).
+
+----
+cd /mnt/midpoint
+chown -R 0:0 . # otherwise npm will compain later
+mvn clean install -DskipTests -P -dist
+----
+
+After this we can examine the problem for which we even use this Docker container, e.g. run a suspicious test:
+
+----
+mvn verify -pl provisioning/provisioning-impl -Dit.test=TestDBTable
+----
+
+
+== Old examples
+
+----
+docker run --rm frolvlad/alpine-bash bash -c 'echo "Hello World"'
+docker run -ti --rm frolvlad/alpine-bash bash
+----
