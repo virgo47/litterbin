@@ -8,19 +8,14 @@ Various scripts to get me up and running with development:
 by environment variable `TOOLS_HOME`.
 It's highly recommended to set this explicitly, otherwise it defaults to `$HOME/tools`.
 
-== Java installation
+== Java only installation
 
-Script `setenv.sh` should be sourced (run in the current shell) to set the environment:
+Use `setenv-java.sh` like this:
 ----
-. cicd/setenv.sh
+. cicd/setenv-java.sh zulujdk-17.0.0
 ----
 
 It sets JDK, that is `JAVA_HOME` variable and prepends `PATH` with the new `JAVA_HOME/bin`.
-
-It can be called with other JDK version like:
-----
-. cicd/setenv.sh zulujdk-8u202
-----
 
 This installs JDK based on definition file `$TOOLS_HOME/java/defs/$1-def.sh`,
 where `$1` is the argument (`zulujdk-8u202` in our case).
@@ -28,6 +23,15 @@ These definition files can be managed globally, like in `global-tools/java/defs`
 The point is to allow reliable download and unzip/install of a precise tool version anytime.
 Download URL can change (and will be redefined), but checksum should be the same (although
 archive format can technically change, but it's unlikely).
+
+== Java and Node installation
+
+Script `setenv.sh` should be sourced (run in the current shell) to set the environment:
+----
+. cicd/setenv.sh
+----
+
+It prepares (and installs if needed) both JDK and Node+NPM combo.
 
 == Definition files
 
@@ -51,16 +55,6 @@ ARCHIVE_UNPACK_APP="tar xzvf"
 # MD5 for Mac
 ARCHIVE_SUM_APP="md5 -r"
 ----
-
-== What about other tools?
-
-Currently, `setenv.sh` and `install-tolls.sh` takes care of JDK only - this is not enough.
-It would be nice to support Node/Npm and other tools, but then a single version argument is
-not sufficient.
-Perhaps there should be all-in-one `setenv.sh` without any arguments and smaller
-`setenv-java.sh`, `setenv-node.sh`, etc., for other tools or toolsets.
-E.g. Node/Npm can be managed together, but there is no reason to tie it to Java version.
-That should be set on the project level as needed.
 
 == Enforcing Java version in `build.gradle`
 
