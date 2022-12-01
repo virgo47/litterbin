@@ -300,25 +300,11 @@ Setup for user command in Total Commander is (as found in `AppData\Roaming\GHISL
 [em_git_bash_here]
 button=C:\Program Files\Git\git-bash.exe
 cmd=""C:\Program Files\ConEmu\ConEmu64.exe""
-param=/cmd {Git bash}
+param=""{Git bash}""
 menu=Git Bash Here
 ----
 
 This counts on existing ConEmu task called "Git bash", so I recommend setting tasks first.
-
-Older version with `-run` that stopped working suddenly, `/cmd` seems to work better now
-(but even better/easier with ConEmu task as above):
-
-----
-[em_git_bash_here]
-button=C:\Program Files\Git\git-bash.exe
-cmd=""C:\Program Files\ConEmu\ConEmu64.exe""
-param=-run "C:\Program Files\Git\git-bash.exe" --no-cd --command=usr/bin/bash.exe -l -i
-menu=Git Bash Here
-----
-
-`-run` is important otherwise every space separated parameter would be interpreted as a new
-console and using quotes around everything wouldn't work either.
 
 Then also add this to `wincmd.ini`
 in the same directory as `usercmd.ini` (both `Alt+B` and `Ctrl+B` launch Git Bash):
