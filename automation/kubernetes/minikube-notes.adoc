@@ -1,0 +1,27 @@
+= Minikube notes
+
+Minikube is a small single-node kubernetes (k8s) cluster for development/testing purposes.
+
+== Getting started
+
+I tried minikube on Windows which used VirtualBox.
+This also provides `kubectl` command on the Windows host, automatically using the minikube cluster.
+
+[source,bash]
+----
+# First start
+minikube start --disk-size 40GB --cpus 4 # default was 20GB, 2 CPU
+# After that simply use: minikube stop/start
+
+# Adding support for kubectl top node/pods
+minikube addons enable metrics-server
+# Wait for the stuff to start, it takes a while, you can check it with:
+kubectl get all -A
+# or, because "all" does NOT show pods
+kubectl get pods -A
+# -A is "all namespaces", use -n <ns> for one, otherwise default is shown
+
+# Ingress and DNS support
+minikube addons enable ingress
+minikube addons enable ingress-dns
+----

@@ -1,0 +1,15 @@
+= kubectl
+
+Various notes about kubectl command, examples, etc.
+
+[source,bash]
+----
+# show all types of supported objects (depends on installed additions, etc.)
+kubectl api-resources
+
+# List of resources in all namespaces (-A), doesn't show volumes, configmaps, etc.:
+kubectl get all -A
+
+# Show volume claims in a specific namespace:
+kubectl get pods -n openproject-test
+----
