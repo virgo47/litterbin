@@ -2,6 +2,11 @@
 
 Minikube is a small single-node kubernetes (k8s) cluster for development/testing purposes.
 
+Installation with Chocolatey - this also provides `kubectl` command:
+----
+choco install -y Minikube
+----
+
 == Getting started
 
 I tried minikube on Windows which used VirtualBox.
@@ -25,3 +30,5 @@ kubectl get pods -A
 minikube addons enable ingress
 minikube addons enable ingress-dns
 ----
+
+// TODO DNS is not verified, is domain in /etc/hosts enough?

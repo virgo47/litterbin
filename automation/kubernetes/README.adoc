@@ -1,0 +1,10 @@
+= Kubernetes notes
+
+To install various tools on the local Windows machine, we can use Chocolatey:
+----
+choco install -y minikube # local k8s cluster for development/experiments
+choco install -y kubernetes-cli # kubectl
+choco install -y kubernetes-helm # helm command
+choco install -y argocd-cli # argocd command
+choco install -y jq yq # handy processors for JSON and YAML
+----

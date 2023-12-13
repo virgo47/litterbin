@@ -1,5 +1,8 @@
 = kubectl
 
+
+== First examples
+
 Various notes about kubectl command, examples, etc.
 
 [source,bash]
@@ -13,3 +16,57 @@ kubectl get all -A
 # Show volume claims in a specific namespace:
 kubectl get pods -n openproject-test
 ----
+
+== Cluster configuration
+
+By default, `kubectl` uses `~/.kube/config`.
+When Minikube is used, it typically shows to that cluster.
+
+To use different configuration file, one can use `kube --kubeconfig <file>`, but that is annoying.
+Instead, set `KUBECONFIG` environment variable and `kubectl` will use that:
+----
+export KUBECONFIG=~/.kube/evo-k8s-admin.conf
+----
+
+== PostgreSQL examples
+
+Examples use Bitnami PG images, because they are often used in Helm charts, etc.
+First, let's use Helm to install the PG from https://artifacthub.io/packages/helm/bitnami/postgresql[Bitnami PG chart]:
+
+[source,bash]
+----
+helm install pg-test oci://registry-1.docker.io/bitnamicharts/postgresql -n pg-test --create-namespace
+# shows the status of the release
+helm status pg-test -n pg-test
+----
+
+This creates the `pg-test` "release" in the specified namespace (the same).
+Without namespace specification, the `default` namespace would be used.
+The installation also shows some useful commands, how to obtain the PG password or how to exec into the pod.
+The same info is also contained in the release status output (`helm status` above).
+Note, how the info shows the actual namespace.
+
+With this setup, you can try the following `kubectl` commands:
+
+[source,bash]
+----
+# Shows the pod, services and stateful set:
+kubectl get all -n pg-test
+
+# To get the password for postgres admin user:
+export POSTGRES_PASSWORD=$(kubectl get secret -n pg-test pg-test-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
+
+# To connect to your database run the following command:
+kubectl run pg-test-postgresql-client --rm --tty -i --restart='Never' -n pg-test \
+  --image docker.io/bitnami/postgresql:16.1.0-debian-11-r15 --env="PGPASSWORD=$POSTGRES_PASSWORD" \
+  --command -- psql --host pg-test-postgresql -U postgres -d postgres -p 5432
+
+# If the pod above gets stuck somehow and is not removed automatically, use:
+kubectl delete pod postgresql-client -n $OP_NAMESPACE
+
+# Getting into the main pod, note the entrypoint.sh specific to Bitnami images.
+# Double / prevents git-bash from "fixing" the paths (and doesn't hurt on Linux):
+kubectl exec -ti -n pg-test pg-test-postgresql-0 -- //opt/bitnami/scripts/postgresql/entrypoint.sh //bin/bash
+----
+
+Example with `pg_dump`...
