@@ -1,5 +1,5 @@
+:toc:
 = kubectl
-
 
 == First examples
 
@@ -70,3 +70,13 @@ kubectl exec -ti -n pg-test pg-test-postgresql-0 -- //opt/bitnami/scripts/postgr
 ----
 
 Example with `pg_dump`...
+
+== Tips and tricks
+
+* If a secret key contains dot `.`, escape it in the `jsonpath` expression, e.g.:
++
+----
+kubectl get secret -n argocd argocd-secret -o jsonpath="{.data.admin\.password}" | base64 -d
+----
+
+* Another tip...
