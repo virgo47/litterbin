@@ -42,25 +42,25 @@ It's better to wait a couple of hours (or days if possible), to let this problem
 nonessential and transitory (yet annoying).
 
 ----
-cinst -y classic-shell
-cinst -y firefox
-cinst -y notepad2
-cinst -y notepadreplacer --params="/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
-cinst -y TotalCommander
-cinst -y winmerge
-cinst -y rapidee
-cinst -y GoogleChrome
-cinst -y FoxitReader
-cinst -y k-litecodecpackfull
-cinst -y foobar2000
-cinst -y gimp
-cinst -y fsviewer
-cinst -y imagemagick
-cinst -y exiftool
-cinst -y slack
-cinst -y obs-studio
-cinst -y cpu-z
-cinst -y hwmonitor
+choco install -y classic-shell
+choco install -y firefox
+choco install -y notepad2
+choco install -y notepadreplacer --params="/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
+choco install -y TotalCommander
+choco install -y winmerge
+choco install -y rapidee
+choco install -y GoogleChrome
+choco install -y FoxitReader
+choco install -y k-litecodecpackfull
+choco install -y foobar2000
+choco install -y gimp
+choco install -y fsviewer
+choco install -y imagemagick
+choco install -y exiftool
+choco install -y slack
+choco install -y obs-studio
+choco install -y cpu-z
+choco install -y hwmonitor
 ----
 Classic Shell set to Aero, small icons.
 OBS Studio is screen capturing software.
@@ -68,42 +68,42 @@ OBS Studio is screen capturing software.
 Developer's tools mandatory:
 
 ----
-cinst -y git
-cinst -y ConEmu
-cinst -y putty
-cinst -y winscp
-cinst -y 7zip.commandline
-cinst -y unzip
-REM cinst -y vim # don't need gvim and vim comes with git
-cinst -y tortoisesvn
-cinst -y wget
-cinst -y jq
-cinst -y cloc
-cinst -y vscodium
+choco install -y git
+choco install -y ConEmu
+choco install -y putty
+choco install -y winscp
+choco install -y 7zip.commandline
+choco install -y unzip
+REM choco install -y vim # don't need gvim and vim comes with git
+choco install -y tortoisesvn
+choco install -y wget
+choco install -y jq
+choco install -y cloc
+choco install -y vscodium
 ----
 
 Other tools for virtualization and other experiments:
 
 ----
-cinst -y virtualbox
-cinst -y vagrant
-cinst -y packer
+choco install -y virtualbox
+choco install -y vagrant
+choco install -y packer
 ----
 
 Greenshot, first https://superuser.com/a/1239937[disable PrintScreen key in OneDrive] (just press
 `PrtSc` and say "No..."):
 
 ----
-cinst -y greenshot
+choco install -y greenshot
 ----
 
 Programming (`ghc` is haskell), in order of general usefulness (`python3` provides `pip`):
 
 ----
-cinst -y python3
-cinst -y ruby
-cinst -y StrawberryPerl
-cinst -y ghc
+choco install -y python3
+choco install -y ruby
+choco install -y StrawberryPerl
+choco install -y ghc
 ----
 
 With Python 3 (and PIP) we can install HTTPie.
@@ -122,22 +122,22 @@ These are typically in `%APPDATA%\Python\Python38\Scripts` or similar.
 The rest (back in admin `cmd`):
 
 ----
-cinst -y processhacker
-cinst -y gpg4win-light
-cinst -y openvpn-community
-cinst -y licecap
-cinst -y nodejs-lts
+choco install -y processhacker
+choco install -y gpg4win-light
+choco install -y openvpn-connect
+choco install -y licecap
+choco install -y nodejs-lts
 
 REM instal WinPcap in advance manually, seems the chocolatey package is broken
-cinst -y wireshark
+choco install -y wireshark
 ----
 
 We can install various GnuWin32 packages:
 
 ----
-cinst -y gnuwin32-coreutils.install
-cinst -y gnuwin32-grep.install
-cinst -y gnuwin32-sed.install
+choco install -y gnuwin32-coreutils.install
+choco install -y gnuwin32-grep.install
+choco install -y gnuwin32-sed.install
 ----
 
 *But instead* we can use existing Git and add `c:\Program Files\Git\usr\bin` and

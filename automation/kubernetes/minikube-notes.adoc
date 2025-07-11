@@ -32,3 +32,22 @@ minikube addons enable ingress-dns
 ----
 
 // TODO DNS is not verified, is domain in /etc/hosts enough?
+
+==  Experiment with Bitnami PostgreSQL Helm chart
+
+https://github.com/bitnami/charts/tree/main/bitnami/postgresq[Bitnami PostgreSQL Helm chart]
+
+[source,bash]
+----
+# this creates postgresql directory with the Helm chart
+helm pull oci://registry-1.docker.io/bitnamicharts/postgresql --untar
+# prepare value file (example below)
+
+----
+
+.values-minitest.yaml
+[source,yaml]
+----
+----
+
+

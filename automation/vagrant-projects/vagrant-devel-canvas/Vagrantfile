@@ -1,0 +1,82 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # base Vagrantbox we're starting with
+  config.vm.box = "bento/ubuntu-22.04"
+  config.vm.hostname = "canvas-devel"
+
+  config.vm.box_check_update = false
+
+  # multiple entries can be added, but we don't need web, and we need 8080 free on host
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # PostgreSQL
+  #config.vm.network "forwarded_port", guest: 5432, host: 5432
+  config.vm.network "private_network", ip: "192.168.56.181"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.name = "canvas-devel"
+    vb.memory = 16384
+    vb.cpus = 4
+
+    vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    vb.customize ["modifyvm", :id, "--vram", "256"]
+    vb.customize ["modifyvm", :id, "--vrde", "off"]
+  end
+
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    # suppresses some warnings about stdin/out, see also https://serverfault.com/a/670688/302310
+    export DEBIAN_FRONTEND=noninteractive
+    # other warnings are still there though (preconfigure, apt-key...)
+
+    RUBY=3.1
+    BUNDLER=2.5.6
+    POSTGRES_CLIENT=14
+    CANVAS_TAG=2024-03-27.333
+
+    apt-get update -y
+    apt upgrade -y
+    apt-get install -y ubuntu-desktop firefox git curl build-essential zlib1g-dev libyaml-dev libssl-dev libpq-dev libreadline-dev postgresql postgresql-client
+
+    apt-get install -y software-properties-common curl
+    add-apt-repository -y ppa:instructure/ruby
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+    sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jammy main > /etc/apt/sources.list.d/passenger.list'
+    apt-get update
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+
+    apt-get install -y ruby${RUBY} ruby${RUBY}-dev zlib1g-dev libxml2-dev libsqlite3-dev\
+     postgresql-${POSTGRES_CLIENT} libpq-dev libxmlsec1-dev libyaml-dev libidn11-dev make g++\
+     tzdata dirmngr gnupg apt-transport-https ca-certificates nodejs git build-essential libssl-dev
+    #apt-get install -y apache2 libapache2-mod-passenger # probably not needed for devel only
+
+    npm install -g npm@latest
+    npm install -g yarn
+    gem install bundler --version ${BUNDLER}
+    #a2enmod rewrite passenger # rewrite is likely activated already
+
+    usermod -a -G sudo vagrant
+
+    lvresize -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+    resize2fs /dev/ubuntu-vg/ubuntu-lv
+
+    snap install intellij-idea-ultimate --classic --edge
+  SHELL
+
+  config.vm.provision :shell, reboot: true
+
+end
+
+__END__
+
+Low-level partition size is 62G, but / is just 31G, to check it:
+lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+To resize it:
+lvresize -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+resize2fs /dev/ubuntu-vg/ubuntu-lv
+
+To remove Home from desktop, open terminal in the graphical desktop and run:
+gsettings set org.gnome.shell.extensions.ding show-home false
