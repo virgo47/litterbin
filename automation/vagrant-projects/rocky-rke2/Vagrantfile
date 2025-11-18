@@ -1,0 +1,52 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # base Vagrantbox we're starting with
+  config.vm.box = "bento/rockylinux-10"
+  config.vm.hostname = "rockrke2"
+
+  config.vm.box_check_update = false
+
+  # multiple entries can be added, but we don't need web, and we need 8080 free on host
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "private_network", ip: "192.168.56.47"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.name = "rockrke2"
+    vb.memory = 16384
+    vb.cpus = 6
+
+    vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    vb.customize ["modifyvm", :id, "--vram", "256"]
+    vb.customize ["modifyvm", :id, "--vrde", "off"]
+  end
+
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    # disable default route for 192.168.56.x network (not a problem on Ubuntu)
+    sudo setenforce 0 # necessary for enp0s8 change
+    sudo nmcli connection modify enp0s8 ipv4.never-default yes
+    sudo setenforce 1
+    # remove it for the rest of provisioning as well
+    sudo route del -net 0.0.0.0 gw 192.168.56.1
+
+    sudo dnf -y update
+  SHELL
+
+  config.vm.provision :shell, reboot: true
+
+end
+
+__END__
+
+Low-level partition size is 62G, but / is just 31G, to check it:
+lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+To resize it:
+lvresize -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+resize2fs /dev/ubuntu-vg/ubuntu-lv
+
+To remove Home from desktop, open terminal in the graphical desktop and run:
+gsettings set org.gnome.shell.extensions.ding show-home false
