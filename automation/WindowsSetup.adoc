@@ -42,10 +42,9 @@ It's better to wait a couple of hours (or days if possible), to let this problem
 nonessential and transitory (yet annoying).
 
 ----
-choco install -y classic-shell
+choco install -y open-shell
 choco install -y firefox
 choco install -y notepad2
-choco install -y notepadreplacer --params="/notepad=C:\Progra~1\Notepad2\Notepad2.exe /verysilent"
 choco install -y TotalCommander
 choco install -y winmerge
 choco install -y rapidee
@@ -62,14 +61,14 @@ choco install -y obs-studio
 choco install -y cpu-z
 choco install -y hwmonitor
 ----
-Classic Shell set to Aero, small icons.
+
+Open Shell (previously Classic Shell) set to Aero, small icons.
 OBS Studio is screen capturing software.
 
 Developer's tools mandatory:
 
 ----
 choco install -y git
-choco install -y ConEmu
 choco install -y putty
 choco install -y winscp
 choco install -y 7zip.commandline
@@ -87,7 +86,7 @@ Other tools for virtualization and other experiments:
 ----
 choco install -y virtualbox
 choco install -y vagrant
-choco install -y packer
+REM choco install -y packer
 ----
 
 Greenshot, first https://superuser.com/a/1239937[disable PrintScreen key in OneDrive] (just press
@@ -211,44 +210,6 @@ Most things can be set from `about:config` URL (see parentheses, valid for Firef
 ** `network.automatic-ntlm-auth.trusted-uris = company.com,hostnames-without-domain`
 ** `network.negotiate-auth.trusted-uris = ...`
 
-
-== ConEmu settings and tips
-
-Best thing is to export settings from previous computer and import XML on the new one.
-
-What I typically change:
-
-* Go to Settings `Win+Alt+P`
-* In *General*:
-** *Choose your startup task...* select - for me it's *Git bash*.
-* In *Keys & Macro*:
-** Global hotkey for *Minimize/Restore* `` Ctrl+` `` collides with IDEA, change to `<None>`
-(choose nothing from the first select after *Choose hotkey* input).
-I'll use `Win+number` for ConEmu anyway.
-** Switch to previous/next console change to `Alt+Left/Right`
-** Open new console popup is `Win+N` (good)
-** Scroll buffer one page up/down - change to `Shift+PgUp/Dn` (`Ctrl` by default)
-** In *Keyboard* subscreen uncheck *Win+Number - activate console*.
-* In *Features* check *Inject ConEmuHk* to support colors in shells properly.
-* Settings XML can be placed next to `conemu.exe` and will be loaded instead of registry.
-* Set it as default term (even if we run `cmd` from Start it will use ConEmu).
-Go to *Integration*, *Default term* and check first checkboxes (Force..., Register..., Leave in TSA).
-To support `cmd` in ConEmu from Total Commander as well, change the list of hooked executables to:
-`explorer.exe|totalcmd.exe` (add more at will).
-* In *Startup*/*Tasks*:
-** Choose your favourite task (e.g. *Git bash*) and set it as default for new console,
-and/or set some *Hotkey* for it (e.g. `Alt+B`).
-
-
-=== Problem - refresh of environment variables
-
-Because any terminal window is attached to the existing ConEmu, not even `Win`, `cmd`, *Enter*
-will create a command line with current environment variables after change. We have to close all
-existing console tabs first, restart the ConEmu completely and then see the result.
-
-To try it we can start `ConEmu64.exe -nosingle` which forces new window and process. After that
-all the new consoles open there and the old ones can be closed at our leisure.
-
 == Various Windows tips/problems
 
 === Windows Defender folder exclusions
@@ -290,24 +251,24 @@ as http://stackoverflow.com/a/35109007/658826[described here].
 
 === Git Bash Here in Total Commander
 
-Better yet is to copy `usercmd/wincmd.ini` from old computer/backup to a new one.
+Better yet is to copy `usercmd.ini` and `wincmd.ini` from old computer/backup to a new one (from `AppData\Roaming\GHISLER` directory).
 
 Based on https://virgo47.wordpress.com/2013/05/05/git-bash-here-in-console2-in-total-commander-with-keyboard-shortcut-hotkey/[my blog]
-where it is for Console2 - this time for ConEmu.
+where it is for Console2 - this time for Windows 11 terminal which is actually quite usable.
 Setup for user command in Total Commander is (as found in `AppData\Roaming\GHISLER\usercmd.ini`):
 
 ----
 [em_git_bash_here]
 button=C:\Program Files\Git\git-bash.exe
-cmd=""C:\Program Files\ConEmu\ConEmu64.exe""
-param=""{Git bash}""
+cmd=C:\Users\virgo\AppData\Local\Microsoft\WindowsApps\wt.exe
+
 menu=Git Bash Here
+param=-w 0 nt -p "Git Bash" -d "%P%"
 ----
 
-This counts on existing ConEmu task called "Git bash", so I recommend setting tasks first.
+This counts on existing profile called "Git bash" which should be available automatically with Windows Git.
 
-Then also add this to `wincmd.ini`
-in the same directory as `usercmd.ini` (both `Alt+B` and `Ctrl+B` launch Git Bash):
+Then also add this to `wincmd.ini` in the same directory as `usercmd.ini` (both `Alt+B` and `Ctrl+B` launch Git Bash):
 
 ----
 [Shortcuts]
